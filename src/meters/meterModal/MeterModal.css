@@ -1,0 +1,22 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 400;
+    width: 70%;
+    height: 60%;
+    overflow: hidden;
+    background-color: blue;
+    transition: height 0.9s ease;
+    margin-left: 15%;
+  }
+  .modal-content {
+    width: 500px;
+    height: 500px;
+    margin: 50px auto; /* Adjust margin as needed */
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  
