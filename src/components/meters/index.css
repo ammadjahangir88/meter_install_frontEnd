@@ -68,5 +68,32 @@
 [data-reach-dialog-content] {
   margin: auto;
 }
+.search-input {
+  margin-right: 10px; /* Reduce margin to create space between input and button */
+}
+
+.add-icon {
+  cursor: pointer;
+  font-size: 24px;
+  left:5px /* Add margin to the left to separate the icon from the button */
+}
+
+/* index.css */
+
+.custom-button {
+  background-color: #11b0fa; /* Light blue background color */
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #05eeff; /* Light blue hover background color */
+}
+
+
 
   
