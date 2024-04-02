@@ -266,7 +266,7 @@ const Index = () => {
         <div className='PlusIcon' onClick={()=>setMetreModal((pre)=>!pre)}>
             ADD Icon
         </div>
-        {metreModal&&<MeterModal isOpen={metreModal} setIsOpen={setMetreModal}/>}
+        {metreModal&&<MeterModal data={data} isOpen={metreModal} setIsOpen={setMetreModal}/>}
         <RightColumn selectedItem={selectedItem} />
       </div>
     </div>

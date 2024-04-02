@@ -1,22 +1,107 @@
 .modal {
-    position: fixed;
-    top: 0;
-    left: 400;
-    width: 70%;
-    height: 60%;
-    overflow: hidden;
-    background-color: blue;
-    transition: height 0.9s ease;
-    margin-left: 15%;
-  }
-  .modal-content {
-    width: 500px;
-    height: 500px;
-    margin: 50px auto; /* Adjust margin as needed */
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  max-height: 80%;
+  overflow-y: auto; /* Enable vertical scrolling */
+  background-color: #fffffe;
+  transition: height 0.9s ease;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.create-meter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #e7edef;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.close-icon {
+  cursor: pointer;
+}
+
+.modal-content {
+  padding: 20px;
+  flex-direction: column;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: calc(100% - 10px); /* Adjust width as needed */
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+  background-color: #e8edef;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.submit-button,
+.cancel-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.submit-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+}
+.dropdown {
+  width: 100%; /* Adjust the width as needed */
+  padding: 0.5rem; /* Adjust padding as needed */
+  border: 1px solid #ccc; /* Border color */
+  border-radius: 4px; /* Border radius */
+  background-color: #fff; /* Background color */
+  font-size: 16px; /* Font size */
+  color: #333; /* Text color */
+  cursor: pointer; /* Cursor style */
+}
+
+.dropdown:hover {
+  border-color: #888; /* Border color on hover */
+}
+
+/* Style for dropdown options */
+.dropdown option {
+  background-color: #fff; /* Background color */
+  color: #333; /* Text color */
+}
+
+/* Style for dropdown arrow */
+.dropdown::after {
+  content: '\25BC'; /* Unicode for down arrow */
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}

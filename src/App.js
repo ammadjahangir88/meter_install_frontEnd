@@ -7,7 +7,7 @@ import Navbar from "./components/Navbar";
 
 const App = () => {
   const { token, logout } = useAuth();
- 
+  
   console.log(token);
   return (
     <>
