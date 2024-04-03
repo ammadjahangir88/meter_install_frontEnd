@@ -1,0 +1,35 @@
+.subdivisions-container {
+    padding: 20px;
+    background-color: #e8f9fd;
+    height: 100vh;
+}
+
+.subdivisions-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.subdivisions-table th,
+.subdivisions-table td {
+    padding: 8px 16px;
+    border-bottom: 1px solid #a3e8fd;
+    text-align: center;
+}
+
+.subdivisions-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.subdivisions-table td {
+    background-color: #ffffff;
+}
+
+.edit-icon,
+.delete-icon {
+    cursor: pointer;
+}
+
+.delete-icon:hover {
+    color: #007bff;
+}

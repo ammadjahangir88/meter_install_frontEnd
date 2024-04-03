@@ -4,24 +4,41 @@ import "./index.css";
 import axiosInstance from "../utils/Axios";
 import MeterModal from "./meterModal/MeterModal";
 import { FaPlus, FaSearch } from "react-icons/fa";
+
+import RightColumn from './RightColumn.js'
+
 const LeftColumn = ({
   data,
   onItemClick,
   onDiscosClick,
   onDivisionClick,
+  onRegionClick, // Add the new prop for region click
   onAllClick,
+  selectedItem, // Add selectedItem prop
+  setSelectedItem, // Add setSelectedItem prop
 }) => {
   const [expandedItems, setExpandedItems] = useState([]);
   const [expandedDivisions, setExpandedDivisions] = useState([]);
+  const [expandedRegions, setExpandedRegions] = useState([]); // State for expanded regions
+  
 
   useEffect(() => {
-    // Expand the "Discos" items by default
-    const discosIds = data.map((item) => item.id);
-    setExpandedItems(discosIds);
-    const divisionsIds = data.flatMap((disco) =>
-      disco.divisions.map((division) => division.id)
-    );
-    setExpandedDivisions(divisionsIds);
+    if (data) {
+      const discosIds = data.map((item) => item.id);
+      setExpandedItems(discosIds);
+
+      const divisionsIds = data.flatMap((disco) =>
+        disco.regions.flatMap((region) =>
+          region.divisions.map((division) => division.id)
+        )
+      );
+      setExpandedDivisions(divisionsIds);
+
+      const regionsIds = data.flatMap((disco) =>
+        disco.regions.map((region) => region.id)
+      );
+      setExpandedRegions(regionsIds);
+    }
   }, [data]);
 
   const toggleItem = (itemId) => {
@@ -40,12 +57,21 @@ const LeftColumn = ({
     }
   };
 
+  const toggleRegion = (regionId) => {
+    if (expandedRegions.includes(regionId)) {
+      setExpandedRegions(expandedRegions.filter((id) => id !== regionId));
+    } else {
+      setExpandedRegions([...expandedRegions, regionId]);
+    }
+  };
+
   const renderTreeItem = (item) => {
     const isExpanded = expandedItems.includes(item.id);
-    const hasChildren = item.divisions && item.divisions.length > 0;
+    const hasChildren = item.regions && item.regions.length > 0;
+    const isSelected = selectedItem && selectedItem.id === item.id; 
 
     return (
-      <div key={item.id} className="tree-item" style={{ marginLeft: "10px" }}>
+      <div key={item.id}          className={`tree-item ${isSelected ? 'selected' : ''}`} style={{ marginLeft: "10px" }}>
         <div
           className="tree-item-header"
           style={{ cursor: "pointer" }}
@@ -58,9 +84,9 @@ const LeftColumn = ({
         </div>
         {isExpanded &&
           hasChildren &&
-          item.divisions.map((division) => (
+          item.regions.map((region) => (
             <div
-              key={division.id}
+              key={region.id}
               className="tree-sub-item"
               style={{ marginLeft: "20px" }}
             >
@@ -68,32 +94,57 @@ const LeftColumn = ({
                 className="tree-sub-item-header"
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  onDivisionClick(division);
-                  toggleDivision(division.id);
+                  onRegionClick(region); // Call onRegionClick
+                  toggleRegion(region.id);
                 }}
               >
-                {division.subdivisions && division.subdivisions.length > 0
-                  ? expandedDivisions.includes(division.id)
+                {region.divisions && region.divisions.length > 0
+                  ? expandedRegions.includes(region.id)
                     ? "▼"
                     : "►"
                   : ""}{" "}
-                {division.name}
+                {region.name}
               </div>
-              {expandedDivisions.includes(division.id) &&
-                division.subdivisions &&
-                division.subdivisions.map((subdivision) => (
+              {expandedRegions.includes(region.id) &&
+                region.divisions &&
+                region.divisions.map((division) => (
                   <div
-                    key={subdivision.id}
+                    key={division.id}
                     className="tree-sub-sub-item"
                     style={{ marginLeft: "30px" }}
                   >
                     <div
                       className="tree-sub-sub-item-header"
                       style={{ cursor: "pointer" }}
-                      onClick={() => onItemClick(subdivision)}
+                      onClick={() => {
+                        onDivisionClick(division);
+                        toggleDivision(division.id);
+                      }}
                     >
-                      {subdivision.name}
+                      {division.subdivisions && division.subdivisions.length > 0
+                        ? expandedDivisions.includes(division.id)
+                          ? "▼"
+                          : "►"
+                        : ""}{" "}
+                      {division.name}
                     </div>
+                    {expandedDivisions.includes(division.id) &&
+                      division.subdivisions &&
+                      division.subdivisions.map((subdivision) => (
+                        <div
+                          key={subdivision.id}
+                          className="tree-sub-sub-sub-item"
+                          style={{ marginLeft: "40px" }}
+                        >
+                          <div
+                            className="tree-sub-sub-sub-item-header"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => onItemClick(subdivision)}
+                          >
+                            {subdivision.name}
+                          </div>
+                        </div>
+                      ))}
                   </div>
                 ))}
             </div>
@@ -102,9 +153,8 @@ const LeftColumn = ({
     );
   };
 
-  // Check if data is null or undefined
   if (!data) {
-    return null; // or return loading indicator if needed
+    return null;
   }
 
   return (
@@ -112,8 +162,10 @@ const LeftColumn = ({
       <h3
         onClick={() => {
           const allMeters = data.flatMap((disco) =>
-            disco.divisions.flatMap((division) =>
-              division.subdivisions.flatMap((subdivision) => subdivision.meters)
+            disco.regions.flatMap((region) =>
+              region.divisions.flatMap((division) =>
+                division.subdivisions.flatMap((subdivision) => subdivision.meters)
+              )
             )
           );
 
@@ -127,99 +179,15 @@ const LeftColumn = ({
   );
 };
 
-const RightColumn = ({ selectedItem }) => {
-  console.log("selectedItem:", selectedItem);
-
-  // Check if selectedItem is null or undefined
-  if (!selectedItem) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <div className="right-column-container">
-      <h2>All Meters</h2>
-
-      {selectedItem.length > 0 ? (
-        <table className="meter-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Meter No</th>
-              <th>Reference No</th>
-              <th>Status</th>
-              <th>Old Meter No</th>
-              <th>Old Meter Reading</th>
-              <th>New Meter Reading</th>
-              <th>Connection Type</th>
-              <th>Bill Month</th>
-              <th>Longitude</th>
-              <th>Latitude</th>
-              <th>Meter Type</th>
-              <th>Kwh MF</th>
-              <th>Sanction Load</th>
-              <th>Full Name</th>
-              <th>Address</th>
-              <th>QC Check</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(selectedItem)
-              ? selectedItem.map((meter) => (
-                  <tr key={meter.id} className="meter-row">
-                    <td>{meter.id}</td>
-                    <td>{meter.meter_no}</td>
-                    <td>{meter.reference_no}</td>
-                    <td>{meter.status}</td>
-                    <td>{meter.old_meter_no}</td>
-                    <td>{meter.old_meter_reading}</td>
-                    <td>{meter.new_meter_reading}</td>
-                    <td>{meter.connection_type}</td>
-                    <td>{meter.bill_month}</td>
-                    <td>{meter.longitude}</td>
-                    <td>{meter.latitude}</td>
-                    <td>{meter.meter_type}</td>
-                    <td>{meter.kwh_mf}</td>
-                    <td>{meter.sanction_load}</td>
-                    <td>{meter.full_name}</td>
-                    <td>{meter.address}</td>
-                    <td>{meter.qc_check ? "Yes" : "No"}</td>
-                  </tr>
-                ))
-              : selectedItem.meters.map((meter) => (
-                  <tr key={meter.id} className="meter-row">
-                    <td>{meter.id}</td>
-                    <td>{meter.meter_no}</td>
-                    <td>{meter.reference_no}</td>
-                    <td>{meter.status}</td>
-                    <td>{meter.old_meter_no}</td>
-                    <td>{meter.old_meter_reading}</td>
-                    <td>{meter.new_meter_reading}</td>
-                    <td>{meter.connection_type}</td>
-                    <td>{meter.bill_month}</td>
-                    <td>{meter.longitude}</td>
-                    <td>{meter.latitude}</td>
-                    <td>{meter.meter_type}</td>
-                    <td>{meter.kwh_mf}</td>
-                    <td>{meter.sanction_load}</td>
-                    <td>{meter.full_name}</td>
-                    <td>{meter.address}</td>
-                    <td>{meter.qc_check ? "Yes" : "No"}</td>
-                  </tr>
-                ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No meters found.</p>
-      )}
-    </div>
-  );
-};
 
 const Index = () => {
   const [metreModal, setMetreModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState([]);
   const [data, setDiscosData] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [displayTree, setDisplayTree] = useState(true); // State to control the display mode
 
   useEffect(() => {
     const fetchData = async () => {
@@ -229,8 +197,10 @@ const Index = () => {
 
         // Extract all meters from the data
         const allMeters = response.data.flatMap((disco) =>
-          disco.divisions.flatMap((division) =>
-            division.subdivisions.flatMap((subdivision) => subdivision.meters)
+          disco.regions.flatMap((region) =>
+            region.divisions.flatMap((division) =>
+              division.subdivisions.flatMap((subdivision) => subdivision.meters)
+            )
           )
         );
 
@@ -246,25 +216,42 @@ const Index = () => {
     fetchData();
   }, []);
 
+  const handleRegionClick = (item) => {
+    // Extract all meters from the clicked region
+    const regionMeters = item.divisions.flatMap((division) =>
+      division.subdivisions.flatMap((subdivision) => subdivision.meters)
+    );
+    console.log(regionMeters);
+    // Set the selected item to the meters of the clicked region
+    setSelectedItem(regionMeters);
+  };
+
   const handleItemClick = (item) => {
     setSelectedItem(item.meters);
   };
+
   const handleDivisionClick = (item) => {
     const divisionMeters = item.subdivisions.flatMap(
       (subdivision) => subdivision.meters
     );
     setSelectedItem(divisionMeters);
   };
+
   const handleAllData = (item) => {
     setSelectedItem(item);
   };
+
   const handleDiscosClick = (disco) => {
+    console.log(disco);
     // Get meters of the clicked Disco
-    const discoMeters = disco.divisions.flatMap((division) =>
-      division.subdivisions.flatMap((subdivision) => subdivision.meters)
+    const discoMeters = disco.regions.flatMap((region) =>
+      region.divisions.flatMap((division) =>
+        division.subdivisions.flatMap((subdivision) => subdivision.meters)
+      )
     );
     setSelectedItem(discoMeters);
   };
+
   function filterData(searchText, data) {
     console.log(data);
 
@@ -279,15 +266,24 @@ const Index = () => {
     return filteredData; // Return filtered data instead of the function itself
   }
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = selectedItem.slice(indexOfFirstItem, indexOfLastItem);
+
   return (
     <div style={{ display: "flex", height: "100vh" }}>
-      <div style={{ flex: 0.3, height: "100%" }}>
+      <div style={{ flex: 0.3, width: "100%", height: "100%" }}>
         <LeftColumn
           data={data}
           onAllClick={handleAllData}
           onDiscosClick={handleDiscosClick}
           onDivisionClick={handleDivisionClick}
           onItemClick={handleItemClick}
+          onRegionClick={handleRegionClick}
         />
       </div>
       <div style={{ flex: 1.7 }}>
@@ -299,41 +295,78 @@ const Index = () => {
             alignItems: "center",
           }}
         >
-          <div style={{display:'flex',flexDirection:'row'}}>
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search"
-              value={searchText}
-              onChange={(e) => {
-                setSearchText(e.target.value);
-              }}
-            />
-            <button
-              className="custom-button"
-              onClick={() => {
-                const filteredData = filterData(searchText, selectedItem);
-                setSelectedItem(filteredData);
-              }}
-            >
-              Search
-            </button>
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            {displayTree && ( // Conditionally render table view button when in tree view mode
+              <button onClick={() => setDisplayTree(false)}>Table View</button>
+            )}
+            {!displayTree && ( // Conditionally render tree view button when in table view mode
+              <button onClick={() => setDisplayTree(true)}>Tree View</button>
+            )}
           </div>
-          <div
-            className="PlusIcon"
-            onClick={() => setMetreModal((pre) => !pre)}
-          >
+          <div className="PlusIcon" onClick={() => setMetreModal((pre) => !pre)}>
             <FaPlus className="add-icon" />
           </div>
         </div>
         {metreModal && (
-          <MeterModal
-            data={data}
-            isOpen={metreModal}
-            setIsOpen={setMetreModal}
-          />
+          <MeterModal data={data} isOpen={metreModal} setIsOpen={setMetreModal} />
         )}
-        <RightColumn selectedItem={selectedItem} />
+        {displayTree ? (
+          <>
+            {/* Render search input and pagination in tree view mode */}
+            <div style={{ display: "flex", alignItems: "center" }}>
+  <div style={{ marginRight: "10px" , display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+    <input
+      type="text"
+      className="search-input"
+      placeholder="Search"
+      value={searchText}
+      onChange={(e) => {
+        setSearchText(e.target.value);
+      }}
+    />
+    <button
+      className="custom-button"
+      onClick={() => {
+        const filteredData = filterData(searchText, selectedItem);
+        setSelectedItem(filteredData);
+      }}
+    >
+      Search
+    </button>
+  </div>
+  <div className="PlusIcon" onClick={() => setMetreModal((pre) => !pre)}>
+    <FaPlus className="add-icon" />
+  </div>
+</div>
+
+            <RightColumn selectedItem={currentItems} />
+            <div className="pagination-container">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="pagination-button"
+              >
+                Previous
+              </button>
+              <span className="pagination-text">
+                Page {currentPage} of {Math.ceil(selectedItem.length / itemsPerPage)}
+              </span>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentItems.length < itemsPerPage}
+                className="pagination-button"
+              >
+                Next
+              </button>
+            </div>
+            {/* Render right column in tree view mode */}
+          
+          </>
+        ) : (
+          <div>
+            {/* Render your table view here */}
+          </div>
+        )}
       </div>
     </div>
   );

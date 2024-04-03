@@ -1,0 +1,54 @@
+.discos-container {
+    padding: 20px;
+    background-color: #e8f9fd;
+    height: 100vh;
+  }
+  
+  .discos-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .discos-table th,
+  .discos-table td {
+    padding: 8px 16px;
+    border-bottom: 1px solid #a3e8fd;
+  }
+  
+  .discos-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  
+  .discos-table td {
+    background-color: #ffffff;
+  }
+  
+  .discos-table th:first-child,
+  .discos-table td:first-child {
+    text-align: center;
+  }
+  
+  .discos-table th:nth-child(2),
+  .discos-table td:nth-child(2) {
+    text-align: left;
+  }
+  
+  .discos-table th:nth-child(3),
+  .discos-table td:nth-child(3),
+  .discos-table th:nth-child(4),
+  .discos-table td:nth-child(4) {
+    text-align: center;
+  }
+  
+  .edit-icon,
+  .delete-icon {
+    cursor: pointer;
+    margin-right: 8px;
+  }
+  
+  .edit-icon:hover,
+  .delete-icon:hover {
+    color: #007bff;
+  }
+  

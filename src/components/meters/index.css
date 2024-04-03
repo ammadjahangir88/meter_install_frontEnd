@@ -1,99 +1,121 @@
+/* index.css */
+
+/* Left column */
 .left-column {
-    background-color: #e8f9fd;
-    box-shadow: 0px 0px 10px #a3e8fd;
-    padding: 10px;
-    height: 100%;
-    overflow-y: auto;
-  }
-  
-  .tree-item-header,
-  .tree-sub-item-header,
-  .tree-sub-sub-item-header {
-    padding: 5px;
-  }
-  
-  .tree-item-header:hover,
-  .tree-sub-item-header:hover,
-  .tree-sub-sub-item-header:hover {
-    background-color: #a3e8fd;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
-  .right-column-container {
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .meter-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .meter-table th, .meter-table td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .meter-table th {
-    background-color: #f2f2f2;
-  }
-  
-  .meter-row:hover {
-    background-color: #f9f9f9;
-  }
-  /* Add this CSS to your index.css or relevant stylesheet */
-
-/* Add this CSS to your index.css or relevant stylesheet */
-
-/* Dialog overlay */
-[aria-hidden="true"] {
-  overflow: hidden;
+  background-color: #f6f8fa;
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+  width: 300px;
 }
 
-/* Dialog panel */
-[data-reach-dialog-content] {
-  position: relative;
-  z-index: 1;
+/* Tree item headers */
+.tree-item-header,
+.tree-sub-item-header,
+.tree-sub-sub-item-header {
+  padding: 10px 5px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #333;
 }
 
-[data-reach-dialog-overlay] {
+.tree-item-header:hover,
+.tree-sub-item-header:hover,
+.tree-sub-sub-item-header:hover {
+  background-color: #e6e6e6;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+/* Right column container */
+.right-column-container {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  margin-left: 20px;
+}
+
+/* Meter table */
+.meter-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.meter-table th,
+.meter-table td {
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.meter-table th {
+  background-color: #f2f2f2;
+}
+
+.meter-row:hover {
+  background-color: #f9f9f9;
+}
+
+/* Search input and button container */
+.search-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+}
+
+.search-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+/* Pagination container */
+.pagination-container {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 20px;
 }
 
-[data-reach-dialog-content] {
-  margin: auto;
-}
-.search-input {
-  margin-right: 10px; /* Reduce margin to create space between input and button */
-}
-
-.add-icon {
-  cursor: pointer;
-  font-size: 24px;
-  left:5px /* Add margin to the left to separate the icon from the button */
-}
-
-/* index.css */
-
-.custom-button {
-  background-color: #11b0fa; /* Light blue background color */
+.pagination-button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  background-color: #007bff;
+  color: #fff;
   border: none;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.custom-button:hover {
-  background-color: #05eeff; /* Light blue hover background color */
+.pagination-button:hover {
+  background-color: #0056b3;
 }
 
+.pagination-button:disabled {
+  background-color: #ced4da;
+  cursor: not-allowed;
+}
 
-
-  
+.pagination-text {
+  margin: 0 10px;
+}
+.tree-item.selected {
+  background-color: #f0f0f0; /* Change background color to highlight the selected item */
+}
