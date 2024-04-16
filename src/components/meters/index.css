@@ -1,5 +1,3 @@
-/* index.css */
-
 /* Left column */
 .left-column {
   background-color: #f6f8fa;
@@ -116,6 +114,24 @@
 .pagination-text {
   margin: 0 10px;
 }
-.tree-item.selected {
-  background-color: #f0f0f0; /* Change background color to highlight the selected item */
+
+
+
+/* Tree item headers */
+.tree-item-header,
+.tree-sub-item-header,
+.tree-sub-sub-item-header,
+.tree-sub-sub-sub-item-header {
+  padding: 10px 5px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #333;
+}
+
+.tree-item-header.highlighted,
+.tree-sub-item-header.highlighted,
+.tree-sub-sub-item-header.highlighted,
+.tree-sub-sub-sub-item-header.highlighted {
+  background-color: #e6e6e6; /* Highlight color */
+  border-radius: 5px;
 }

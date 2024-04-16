@@ -5,150 +5,117 @@ import axiosInstance from "../utils/Axios";
 import MeterModal from "./meterModal/MeterModal";
 import { FaPlus, FaSearch } from "react-icons/fa";
 
-import RightColumn from './RightColumn.js'
+import RightColumn from "./RightColumn.js";
 
+// Main LeftColumn component function
 const LeftColumn = ({
   data,
   onItemClick,
   onDiscosClick,
   onDivisionClick,
-  onRegionClick, // Add the new prop for region click
-  onAllClick,
-  selectedItem, // Add selectedItem prop
-  setSelectedItem, // Add setSelectedItem prop
+  onRegionClick,
+  setSelectedItem,
+  selectedItemId
 }) => {
   const [expandedItems, setExpandedItems] = useState([]);
   const [expandedDivisions, setExpandedDivisions] = useState([]);
-  const [expandedRegions, setExpandedRegions] = useState([]); // State for expanded regions
-  
+  const [expandedRegions, setExpandedRegions] = useState([]);
 
-  useEffect(() => {
-    if (data) {
-      const discosIds = data.map((item) => item.id);
-      setExpandedItems(discosIds);
-
-      const divisionsIds = data.flatMap((disco) =>
-        disco.regions.flatMap((region) =>
-          region.divisions.map((division) => division.id)
-        )
-      );
-      setExpandedDivisions(divisionsIds);
-
-      const regionsIds = data.flatMap((disco) =>
-        disco.regions.map((region) => region.id)
-      );
-      setExpandedRegions(regionsIds);
-    }
-  }, [data]);
-
-  const toggleItem = (itemId) => {
-    if (expandedItems.includes(itemId)) {
-      setExpandedItems(expandedItems.filter((id) => id !== itemId));
+  // Function to toggle expansion of items
+  const toggleItemExpansion = (items, setItems, itemId) => {
+    if (items.includes(itemId)) {
+      setItems(items.filter(id => id !== itemId));
     } else {
-      setExpandedItems([...expandedItems, itemId]);
+      setItems([...items, itemId]);
     }
   };
 
-  const toggleDivision = (divisionId) => {
-    if (expandedDivisions.includes(divisionId)) {
-      setExpandedDivisions(expandedDivisions.filter((id) => id !== divisionId));
-    } else {
-      setExpandedDivisions([...expandedDivisions, divisionId]);
-    }
+  // Function to set the selected item with a type prefix
+  const handleSetSelectedItem = (id, type) => {
+    setSelectedItem(`${type}-${id}`);
   };
 
-  const toggleRegion = (regionId) => {
-    if (expandedRegions.includes(regionId)) {
-      setExpandedRegions(expandedRegions.filter((id) => id !== regionId));
-    } else {
-      setExpandedRegions([...expandedRegions, regionId]);
-    }
-  };
-
-  const renderTreeItem = (item) => {
-    const isExpanded = expandedItems.includes(item.id);
-    const hasChildren = item.regions && item.regions.length > 0;
-    const isSelected = selectedItem && selectedItem.id === item.id; 
+  // Render a subdivision item within a division
+  const renderSubdivisionItem = (subdivision) => {
+    const isSelected = selectedItemId === `subdivision-${subdivision.id}`;
 
     return (
-      <div key={item.id}          className={`tree-item ${isSelected ? 'selected' : ''}`} style={{ marginLeft: "10px" }}>
+      <div key={subdivision.id} className="tree-sub-sub-sub-item" style={{ marginLeft: "40px" }}>
         <div
-          className="tree-item-header"
-          style={{ cursor: "pointer" }}
+          className={`tree-sub-sub-sub-item-header ${isSelected ? "highlighted" : ""}`}
           onClick={() => {
-            onDiscosClick(item);
-            toggleItem(item.id);
+            onItemClick(subdivision);
+            handleSetSelectedItem(subdivision.id, 'subdivision');
           }}
         >
-          {hasChildren ? (isExpanded ? "▼" : "►") : ""} {item.name}
+          {subdivision.name}
         </div>
-        {isExpanded &&
-          hasChildren &&
-          item.regions.map((region) => (
-            <div
-              key={region.id}
-              className="tree-sub-item"
-              style={{ marginLeft: "20px" }}
-            >
-              <div
-                className="tree-sub-item-header"
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  onRegionClick(region); // Call onRegionClick
-                  toggleRegion(region.id);
-                }}
-              >
-                {region.divisions && region.divisions.length > 0
-                  ? expandedRegions.includes(region.id)
-                    ? "▼"
-                    : "►"
-                  : ""}{" "}
-                {region.name}
-              </div>
-              {expandedRegions.includes(region.id) &&
-                region.divisions &&
-                region.divisions.map((division) => (
-                  <div
-                    key={division.id}
-                    className="tree-sub-sub-item"
-                    style={{ marginLeft: "30px" }}
-                  >
-                    <div
-                      className="tree-sub-sub-item-header"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        onDivisionClick(division);
-                        toggleDivision(division.id);
-                      }}
-                    >
-                      {division.subdivisions && division.subdivisions.length > 0
-                        ? expandedDivisions.includes(division.id)
-                          ? "▼"
-                          : "►"
-                        : ""}{" "}
-                      {division.name}
-                    </div>
-                    {expandedDivisions.includes(division.id) &&
-                      division.subdivisions &&
-                      division.subdivisions.map((subdivision) => (
-                        <div
-                          key={subdivision.id}
-                          className="tree-sub-sub-sub-item"
-                          style={{ marginLeft: "40px" }}
-                        >
-                          <div
-                            className="tree-sub-sub-sub-item-header"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => onItemClick(subdivision)}
-                          >
-                            {subdivision.name}
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                ))}
-            </div>
-          ))}
+      </div>
+    );
+  };
+
+  // Render a division item within a region
+  const renderDivisionItem = (division) => {
+    const isExpanded = expandedDivisions.includes(division.id);
+    const isSelected = selectedItemId === `division-${division.id}`;
+
+    return (
+      <div key={division.id} className="tree-sub-sub-item" style={{ marginLeft: "30px" }}>
+        <div
+          className={`tree-sub-sub-item-header ${isSelected ? "highlighted" : ""}`}
+          onClick={() => {
+            onDivisionClick(division);
+            toggleItemExpansion(expandedDivisions, setExpandedDivisions, division.id);
+            handleSetSelectedItem(division.id, 'division');
+          }}
+        >
+          {division.subdivisions && division.subdivisions.length > 0 ? (isExpanded ? "▼" : "►") : ""} {division.name}
+        </div>
+        {isExpanded && division.subdivisions.map(subdivision => renderSubdivisionItem(subdivision))}
+      </div>
+    );
+  };
+
+  // Render a region item within a disco
+  const renderRegionItem = (region) => {
+    const isExpanded = expandedRegions.includes(region.id);
+    const isSelected = selectedItemId === `region-${region.id}`;
+
+    return (
+      <div key={region.id} className="tree-sub-item" style={{ marginLeft: "20px" }}>
+        <div
+          className={`tree-sub-item-header ${isSelected ? "highlighted" : ""}`}
+          onClick={() => {
+            onRegionClick(region);
+            toggleItemExpansion(expandedRegions, setExpandedRegions, region.id);
+            handleSetSelectedItem(region.id, 'region');
+          }}
+        >
+          {region.divisions && region.divisions.length > 0 ? (isExpanded ? "▼" : "►") : ""} {region.name}
+        </div>
+        {isExpanded && region.divisions.map(division => renderDivisionItem(division))}
+      </div>
+    );
+  };
+
+  // Render a disco item at the top level
+  const renderTreeItem = (item) => {
+    const isExpanded = expandedItems.includes(item.id);
+    const isSelected = selectedItemId === `disco-${item.id}`;
+
+    return (
+      <div key={item.id} className="tree-item" style={{ marginLeft: "10px" }}>
+        <div
+          className={`tree-item-header ${isSelected ? "highlighted" : ""}`}
+          onClick={() => {
+            onDiscosClick(item);
+            toggleItemExpansion(expandedItems, setExpandedItems, item.id);
+            handleSetSelectedItem(item.id, 'disco');
+          }}
+        >
+          {item.regions && item.regions.length > 0 ? (isExpanded ? "▼" : "►") : ""} {item.name}
+        </div>
+        {isExpanded && item.regions.map(region => renderRegionItem(region))}
       </div>
     );
   };
@@ -159,22 +126,7 @@ const LeftColumn = ({
 
   return (
     <div className="left-column">
-      <h3
-        onClick={() => {
-          const allMeters = data.flatMap((disco) =>
-            disco.regions.flatMap((region) =>
-              region.divisions.flatMap((division) =>
-                division.subdivisions.flatMap((subdivision) => subdivision.meters)
-              )
-            )
-          );
-
-          onAllClick(allMeters);
-        }}
-      >
-        All
-      </h3>
-      {data.map((item) => renderTreeItem(item))}
+      {data.map(renderTreeItem)}
     </div>
   );
 };
@@ -183,6 +135,7 @@ const LeftColumn = ({
 const Index = () => {
   const [metreModal, setMetreModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState([]);
+  const [selectedItemId, setSelectedItemId] = useState(null);
   const [data, setDiscosData] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -279,11 +232,12 @@ const Index = () => {
       <div style={{ flex: 0.3, width: "100%", height: "100%" }}>
         <LeftColumn
           data={data}
-          onAllClick={handleAllData}
+          setSelectedItem={setSelectedItemId} // Make sure this is correct
+          selectedItemId={selectedItemId}
           onDiscosClick={handleDiscosClick}
           onDivisionClick={handleDivisionClick}
-          onItemClick={handleItemClick}
           onRegionClick={handleRegionClick}
+          onItemClick={handleItemClick}
         />
       </div>
       <div style={{ flex: 1.7 }}>
@@ -303,41 +257,58 @@ const Index = () => {
               <button onClick={() => setDisplayTree(true)}>Tree View</button>
             )}
           </div>
-          <div className="PlusIcon" onClick={() => setMetreModal((pre) => !pre)}>
+          <div
+            className="PlusIcon"
+            onClick={() => setMetreModal((pre) => !pre)}
+          >
             <FaPlus className="add-icon" />
           </div>
         </div>
         {metreModal && (
-          <MeterModal data={data} isOpen={metreModal} setIsOpen={setMetreModal} />
+          <MeterModal
+            data={data}
+            isOpen={metreModal}
+            setIsOpen={setMetreModal}
+          />
         )}
         {displayTree ? (
           <>
             {/* Render search input and pagination in tree view mode */}
             <div style={{ display: "flex", alignItems: "center" }}>
-  <div style={{ marginRight: "10px" , display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
-    <input
-      type="text"
-      className="search-input"
-      placeholder="Search"
-      value={searchText}
-      onChange={(e) => {
-        setSearchText(e.target.value);
-      }}
-    />
-    <button
-      className="custom-button"
-      onClick={() => {
-        const filteredData = filterData(searchText, selectedItem);
-        setSelectedItem(filteredData);
-      }}
-    >
-      Search
-    </button>
-  </div>
-  <div className="PlusIcon" onClick={() => setMetreModal((pre) => !pre)}>
-    <FaPlus className="add-icon" />
-  </div>
-</div>
+              <div
+                style={{
+                  marginRight: "10px",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search"
+                  value={searchText}
+                  onChange={(e) => {
+                    setSearchText(e.target.value);
+                  }}
+                />
+                <button
+                  className="custom-button"
+                  onClick={() => {
+                    const filteredData = filterData(searchText, selectedItem);
+                    setSelectedItem(filteredData);
+                  }}
+                >
+                  Search
+                </button>
+              </div>
+              <div
+                className="PlusIcon"
+                onClick={() => setMetreModal((pre) => !pre)}
+              >
+                <FaPlus className="add-icon" />
+              </div>
+            </div>
 
             <RightColumn selectedItem={currentItems} />
             <div className="pagination-container">
@@ -349,7 +320,8 @@ const Index = () => {
                 Previous
               </button>
               <span className="pagination-text">
-                Page {currentPage} of {Math.ceil(selectedItem.length / itemsPerPage)}
+                Page {currentPage} of{" "}
+                {Math.ceil(selectedItem.length / itemsPerPage)}
               </span>
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
@@ -360,12 +332,9 @@ const Index = () => {
               </button>
             </div>
             {/* Render right column in tree view mode */}
-          
           </>
         ) : (
-          <div>
-            {/* Render your table view here */}
-          </div>
+          <div>{/* Render your table view here */}</div>
         )}
       </div>
     </div>
