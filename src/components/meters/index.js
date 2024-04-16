@@ -4,132 +4,13 @@ import "./index.css";
 import axiosInstance from "../utils/Axios";
 import MeterModal from "./meterModal/MeterModal";
 import { FaPlus, FaSearch } from "react-icons/fa";
-
 import RightColumn from "./RightColumn.js";
+import TableView from "./TableView.js";
+import LeftColumn from "./LeftColumn.js";
+import Pagination from "./Pagination";
 
-// Main LeftColumn component function
-const LeftColumn = ({
-  data,
-  onItemClick,
-  onDiscosClick,
-  onDivisionClick,
-  onRegionClick,
-  setSelectedItem,
-  selectedItemId
-}) => {
-  const [expandedItems, setExpandedItems] = useState([]);
-  const [expandedDivisions, setExpandedDivisions] = useState([]);
-  const [expandedRegions, setExpandedRegions] = useState([]);
 
-  // Function to toggle expansion of items
-  const toggleItemExpansion = (items, setItems, itemId) => {
-    if (items.includes(itemId)) {
-      setItems(items.filter(id => id !== itemId));
-    } else {
-      setItems([...items, itemId]);
-    }
-  };
 
-  // Function to set the selected item with a type prefix
-  const handleSetSelectedItem = (id, type) => {
-    setSelectedItem(`${type}-${id}`);
-  };
-
-  // Render a subdivision item within a division
-  const renderSubdivisionItem = (subdivision) => {
-    const isSelected = selectedItemId === `subdivision-${subdivision.id}`;
-
-    return (
-      <div key={subdivision.id} className="tree-sub-sub-sub-item" style={{ marginLeft: "40px" }}>
-        <div
-          className={`tree-sub-sub-sub-item-header ${isSelected ? "highlighted" : ""}`}
-          onClick={() => {
-            onItemClick(subdivision);
-            handleSetSelectedItem(subdivision.id, 'subdivision');
-          }}
-        >
-          {subdivision.name}
-        </div>
-      </div>
-    );
-  };
-
-  // Render a division item within a region
-  const renderDivisionItem = (division) => {
-    const isExpanded = expandedDivisions.includes(division.id);
-    const isSelected = selectedItemId === `division-${division.id}`;
-
-    return (
-      <div key={division.id} className="tree-sub-sub-item" style={{ marginLeft: "30px" }}>
-        <div
-          className={`tree-sub-sub-item-header ${isSelected ? "highlighted" : ""}`}
-          onClick={() => {
-            onDivisionClick(division);
-            toggleItemExpansion(expandedDivisions, setExpandedDivisions, division.id);
-            handleSetSelectedItem(division.id, 'division');
-          }}
-        >
-          {division.subdivisions && division.subdivisions.length > 0 ? (isExpanded ? "▼" : "►") : ""} {division.name}
-        </div>
-        {isExpanded && division.subdivisions.map(subdivision => renderSubdivisionItem(subdivision))}
-      </div>
-    );
-  };
-
-  // Render a region item within a disco
-  const renderRegionItem = (region) => {
-    const isExpanded = expandedRegions.includes(region.id);
-    const isSelected = selectedItemId === `region-${region.id}`;
-
-    return (
-      <div key={region.id} className="tree-sub-item" style={{ marginLeft: "20px" }}>
-        <div
-          className={`tree-sub-item-header ${isSelected ? "highlighted" : ""}`}
-          onClick={() => {
-            onRegionClick(region);
-            toggleItemExpansion(expandedRegions, setExpandedRegions, region.id);
-            handleSetSelectedItem(region.id, 'region');
-          }}
-        >
-          {region.divisions && region.divisions.length > 0 ? (isExpanded ? "▼" : "►") : ""} {region.name}
-        </div>
-        {isExpanded && region.divisions.map(division => renderDivisionItem(division))}
-      </div>
-    );
-  };
-
-  // Render a disco item at the top level
-  const renderTreeItem = (item) => {
-    const isExpanded = expandedItems.includes(item.id);
-    const isSelected = selectedItemId === `disco-${item.id}`;
-
-    return (
-      <div key={item.id} className="tree-item" style={{ marginLeft: "10px" }}>
-        <div
-          className={`tree-item-header ${isSelected ? "highlighted" : ""}`}
-          onClick={() => {
-            onDiscosClick(item);
-            toggleItemExpansion(expandedItems, setExpandedItems, item.id);
-            handleSetSelectedItem(item.id, 'disco');
-          }}
-        >
-          {item.regions && item.regions.length > 0 ? (isExpanded ? "▼" : "►") : ""} {item.name}
-        </div>
-        {isExpanded && item.regions.map(region => renderRegionItem(region))}
-      </div>
-    );
-  };
-
-  if (!data) {
-    return null;
-  }
-
-  return (
-    <div className="left-column">
-      {data.map(renderTreeItem)}
-    </div>
-  );
-};
 
 
 const Index = () => {
@@ -141,7 +22,7 @@ const Index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [displayTree, setDisplayTree] = useState(true); // State to control the display mode
-
+   
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -222,17 +103,18 @@ const Index = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
+  const [highlightedItem, setHighlightedItem] = useState({ name: '', type: '' });
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = selectedItem.slice(indexOfFirstItem, indexOfLastItem);
-
+  console.log(highlightedItem)
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       <div style={{ flex: 0.3, width: "100%", height: "100%" }}>
         <LeftColumn
           data={data}
           setSelectedItem={setSelectedItemId} // Make sure this is correct
+          setHighlightedItem={setHighlightedItem}
           selectedItemId={selectedItemId}
           onDiscosClick={handleDiscosClick}
           onDivisionClick={handleDivisionClick}
@@ -311,30 +193,21 @@ const Index = () => {
             </div>
 
             <RightColumn selectedItem={currentItems} />
-            <div className="pagination-container">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="pagination-button"
-              >
-                Previous
-              </button>
-              <span className="pagination-text">
-                Page {currentPage} of{" "}
-                {Math.ceil(selectedItem.length / itemsPerPage)}
-              </span>
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentItems.length < itemsPerPage}
-                className="pagination-button"
-              >
-                Next
-              </button>
-            </div>
-            {/* Render right column in tree view mode */}
+            <Pagination
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              totalItems={selectedItem.length}
+              onPageChange={handlePageChange}
+            />
+            
           </>
         ) : (
-          <div>{/* Render your table view here */}</div>
+          <div>
+              {/* <div>{highlightedItem.name} ({highlightedItem.type})</div>  */}
+              <TableView data={data} item={highlightedItem} />
+            
+            
+          </div>
         )}
       </div>
     </div>

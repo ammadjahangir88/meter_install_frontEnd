@@ -1,128 +1,76 @@
-import { useEffect, useState } from "react";
-import './index.css'
+import React, { useState } from 'react';
+import './LeftColumn.css';
 
-const LeftColumn = ({
-    data,
-    onItemClick,
-    onDiscosClick,
-    onDivisionClick,
-    onAllClick,
-  }) => {
-    const [expandedItems, setExpandedItems] = useState([]);
-    const [expandedDivisions, setExpandedDivisions] = useState([]);
-  
-    useEffect(() => {
-      if (data) {
-        const discosIds = data.map((item) => item.id);
-        setExpandedItems(discosIds);
-        console.log(data)
-        const divisionsIds = data.flatMap((disco) =>
-          disco.divisions.map((division) => division.id)
-        );
-        setExpandedDivisions(divisionsIds);
-      }
-    }, [data]);
-  
-    const toggleItem = (itemId) => {
-      if (expandedItems.includes(itemId)) {
-        setExpandedItems(expandedItems.filter((id) => id !== itemId));
-      } else {
-        setExpandedItems([...expandedItems, itemId]);
-      }
-    };
-  
-    const toggleDivision = (divisionId) => {
-      if (expandedDivisions.includes(divisionId)) {
-        setExpandedDivisions(expandedDivisions.filter((id) => id !== divisionId));
-      } else {
-        setExpandedDivisions([...expandedDivisions, divisionId]);
-      }
-    };
-  
-    const renderTreeItem = (item) => {
-      const isExpanded = expandedItems.includes(item.id);
-      const hasChildren = item.divisions && item.divisions.length > 0;
-  
-      return (
-        <div key={item.id} className="tree-item" style={{ marginLeft: "10px" }}>
-          <div
-            className="tree-item-header"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              onDiscosClick(item);
-              toggleItem(item.id);
-            }}
-          >
-            {hasChildren ? (isExpanded ? "▼" : "►") : ""} {item.name}
-          </div>
-          {isExpanded &&
-            hasChildren &&
-            item.divisions.map((division) => (
-              <div
-                key={division.id}
-                className="tree-sub-item"
-                style={{ marginLeft: "20px" }}
-              >
-                <div
-                  className="tree-sub-item-header"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    onDivisionClick(division);
-                    toggleDivision(division.id);
-                  }}
-                >
-                  {division.subdivisions && division.subdivisions.length > 0
-                    ? expandedDivisions.includes(division.id)
-                      ? "▼"
-                      : "►"
-                    : ""}{" "}
-                  {division.name}
-                </div>
-                {expandedDivisions.includes(division.id) &&
-                  division.subdivisions &&
-                  division.subdivisions.map((subdivision) => (
-                    <div
-                      key={subdivision.id}
-                      className="tree-sub-sub-item"
-                      style={{ marginLeft: "30px" }}
-                    >
-                      <div
-                        className="tree-sub-sub-item-header"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => onItemClick(subdivision)}
-                      >
-                        {subdivision.name}
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            ))}
-        </div>
-      );
-    };
-  
-    if (!data) {
-      return null;
-    }
-  
-    return (
-      <div className="left-column">
-        <h3
-          onClick={() => {
-            const allMeters = data.flatMap((disco) =>
-              disco.divisions.flatMap((division) =>
-                division.subdivisions.flatMap((subdivision) => subdivision.meters)
-              )
-            );
-  
-            onAllClick(allMeters);
-          }}
-        >
-          All
-        </h3>
-        {data.map((item) => renderTreeItem(item))}
-      </div>
-    );
+// Utility functions for handling item toggles
+const toggleItem = (list, setList, id) => {
+  setList(list.includes(id) ? list.filter(item => item !== id) : [...list, id]);
+};
+
+const LeftColumn = ({ data, onItemClick, onDiscosClick, onDivisionClick, onRegionClick, setSelectedItem, setHighlightedItem, selectedItemId }) => {
+  const [expandedItems, setExpandedItems] = useState([]);
+  const [expandedDivisions, setExpandedDivisions] = useState([]);
+  const [expandedRegions, setExpandedRegions] = useState([]);
+
+  const handleSetSelectedItem = (id, type, name) => {
+    setSelectedItem(`${type}-${id}`);
+    setHighlightedItem({ name, type });
   };
+
+  const renderTreeItem = item => (
+    <div key={item.id} className="tree-item">
+      <div className={`tree-item-header ${selectedItemId === `disco-${item.id}` ? "highlighted" : ""}`}
+           onClick={() => {
+             onDiscosClick(item);
+             toggleItem(expandedItems, setExpandedItems, item.id);
+             handleSetSelectedItem(item.id, 'disco', item.name);
+           }}>
+        {item.regions.length > 0 ? (expandedItems.includes(item.id) ? "▼" : "►") : ""} {item.name}
+      </div>
+      {expandedItems.includes(item.id) && item.regions.map(renderRegionItem)}
+    </div>
+  );
+
+  const renderRegionItem = region => (
+    <div key={region.id} className="tree-sub-item">
+      <div className={`tree-sub-item-header ${selectedItemId === `region-${region.id}` ? "highlighted" : ""}`}
+           onClick={() => {
+             onRegionClick(region);
+             toggleItem(expandedRegions, setExpandedRegions, region.id);
+             handleSetSelectedItem(region.id, 'region', region.name);
+           }}>
+        {region.divisions.length > 0 ? (expandedRegions.includes(region.id) ? "▼" : "►") : ""} {region.name}
+      </div>
+      {expandedRegions.includes(region.id) && region.divisions.map(renderDivisionItem)}
+    </div>
+  );
+
+  const renderDivisionItem = division => (
+    <div key={division.id} className="tree-sub-sub-item">
+      <div className={`tree-sub-sub-item-header ${selectedItemId === `division-${division.id}` ? "highlighted" : ""}`}
+           onClick={() => {
+             onDivisionClick(division);
+             toggleItem(expandedDivisions, setExpandedDivisions, division.id);
+             handleSetSelectedItem(division.id, 'division', division.name);
+           }}>
+        {division.subdivisions.length > 0 ? (expandedDivisions.includes(division.id) ? "▼" : "►") : ""} {division.name}
+      </div>
+      {expandedDivisions.includes(division.id) && division.subdivisions.map(subdivision => (
+        <div key={subdivision.id} className="tree-sub-sub-sub-item">
+          <div className={`tree-sub-sub-sub-item-header ${selectedItemId === `subdivision-${subdivision.id}` ? "highlighted" : ""}`}
+               onClick={() => {
+                 onItemClick(subdivision);
+                 handleSetSelectedItem(subdivision.id, 'subdivision', subdivision.name);
+               }}>
+            {subdivision.name}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  if (!data.length) return <div>No data available.</div>;
+
+  return <div className="left-column">{data.map(renderTreeItem)}</div>;
+};
 
 export default LeftColumn;
