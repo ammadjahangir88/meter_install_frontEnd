@@ -11,6 +11,7 @@
 
 .right-panel {
   flex: 1.7;
+  
 }
 
 .panel-controls {
@@ -73,11 +74,12 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   margin-left: 20px;
+  width: 90%;
+
 }
 
 /* Meter table */
 .meter-table {
-  width: 100%;
   border-collapse: collapse;
 }
 

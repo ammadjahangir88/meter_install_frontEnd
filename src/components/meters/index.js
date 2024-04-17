@@ -120,9 +120,10 @@ const Index = () => {
           onDivisionClick={handleDivisionClick}
           onRegionClick={handleRegionClick}
           onItemClick={handleItemClick}
+          onAllClick={handleAllData}
         />
       </div>
-      <div style={{ flex: 1.7 }}>
+      <div style={{ flex: 1.7, width: '70%' }}>
         <div
           style={{
             display: "flex",
@@ -139,12 +140,7 @@ const Index = () => {
               <button onClick={() => setDisplayTree(true)}>Tree View</button>
             )}
           </div>
-          <div
-            className="PlusIcon"
-            onClick={() => setMetreModal((pre) => !pre)}
-          >
-            <FaPlus className="add-icon" />
-          </div>
+        
         </div>
         {metreModal && (
           <MeterModal
@@ -184,12 +180,7 @@ const Index = () => {
                   Search
                 </button>
               </div>
-              <div
-                className="PlusIcon"
-                onClick={() => setMetreModal((pre) => !pre)}
-              >
-                <FaPlus className="add-icon" />
-              </div>
+            
             </div>
 
             <RightColumn selectedItem={currentItems} />

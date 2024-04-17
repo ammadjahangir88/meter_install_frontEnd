@@ -6,7 +6,7 @@ const toggleItem = (list, setList, id) => {
   setList(list.includes(id) ? list.filter(item => item !== id) : [...list, id]);
 };
 
-const LeftColumn = ({ data, onItemClick, onDiscosClick, onDivisionClick, onRegionClick, setSelectedItem, setHighlightedItem, selectedItemId }) => {
+const LeftColumn = ({ data, onItemClick, onDiscosClick, onDivisionClick, onRegionClick, setSelectedItem, setHighlightedItem, selectedItemId,onAllClick }) => {
   const [expandedItems, setExpandedItems] = useState([]);
   const [expandedDivisions, setExpandedDivisions] = useState([]);
   const [expandedRegions, setExpandedRegions] = useState([]);
@@ -27,6 +27,22 @@ const LeftColumn = ({ data, onItemClick, onDiscosClick, onDivisionClick, onRegio
         {item.regions.length > 0 ? (expandedItems.includes(item.id) ? "▼" : "►") : ""} {item.name}
       </div>
       {expandedItems.includes(item.id) && item.regions.map(renderRegionItem)}
+    </div>
+  );
+  const renderAllOption = () => (
+    <div className={`tree-item-header ${selectedItemId === 'all' ? "highlighted" : ""}`}
+         onClick={() => {
+          onAllClick(data.flatMap(disco =>
+             disco.regions.flatMap(region =>
+               region.divisions.flatMap(division =>
+                 division.subdivisions.flatMap(subdivision => subdivision.meters)
+               )
+             )
+           ));
+           setSelectedItem('all');
+           setHighlightedItem({ name: 'All', type: 'all' });
+         }}>
+      All
     </div>
   );
 
@@ -70,7 +86,12 @@ const LeftColumn = ({ data, onItemClick, onDiscosClick, onDivisionClick, onRegio
 
   if (!data.length) return <div>No data available.</div>;
 
-  return <div className="left-column">{data.map(renderTreeItem)}</div>;
+  return (
+    <div className="left-column">
+      {renderAllOption()}
+      {data.map(renderTreeItem)}
+    </div>
+  );
 };
 
 export default LeftColumn;
