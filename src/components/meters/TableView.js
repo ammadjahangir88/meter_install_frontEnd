@@ -53,14 +53,14 @@ const TableView = ({ data, item }) => {
     const { type } = item;
     let url = '';
     let confirmationMsg = '';
-
+  
     switch (type) {
       case 'disco':
-        confirmationMsg = `Are you sure you want to delete the following regions of ${item.name}?`;
+        confirmationMsg = `Are you sure you want to delete the following regions of ${item.name}?<br>All the associated divisions and sub divisions will be deleted too.`;
         url = '/v1/discos/delete_regions';
         break;
       case 'region':
-        confirmationMsg = `Are you sure you want to delete the following divisions of ${item.name}?`;
+        confirmationMsg = `Are you sure you want to delete the following divisions of ${item.name}?<br>All the associated sub divisions will be deleted too.`;
         url = '/v1/discos/delete_divisions';
         break;
       case 'division':
@@ -70,11 +70,11 @@ const TableView = ({ data, item }) => {
       default:
         return;
     }
-
-    // Set the confirmation message based on the item type
+  
     setShowConfirmation(true);
     setConfirmationMessage(confirmationMsg);
   };
+  
 
   const confirmDelete = async () => {
     const { type } = item;
