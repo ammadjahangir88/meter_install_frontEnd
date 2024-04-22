@@ -1,12 +1,13 @@
+/* Navbar.css */
+
 nav {
-    background-color: #0cd6fa; /* Change background color */
-    color: #fff; /* Change text color */
+    background-color: #e8f9fd;
+    color: black;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
     font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
 }
 
 nav ul {
@@ -25,13 +26,9 @@ nav ul li:last-child {
 }
 
 nav ul li a {
-    color: #fff; /* Change link color */
+    color: black;
+ 
     text-decoration: none;
-    transition: color 0.3s; /* Add transition for smooth color change */
-}
-
-nav ul li a:hover {
-    color: #ffd700; /* Change link color on hover */
 }
 
 .logo {

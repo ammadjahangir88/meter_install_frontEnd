@@ -8,15 +8,13 @@ import RightColumn from "./RightColumn.js";
 import TableView from "./TableView.js";
 import LeftColumn from "./LeftColumn.js";
 
-
-
 const Index = () => {
   const [metreModal, setMetreModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [data, setDiscosData] = useState([]);
   const [displayTree, setDisplayTree] = useState(true); // State to control the display mode
-   
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -80,11 +78,12 @@ const Index = () => {
     setSelectedItem(discoMeters);
   };
 
- 
-  const [highlightedItem, setHighlightedItem] = useState({ name: '', type: '' });
- 
-  
-  console.log(highlightedItem)
+  const [highlightedItem, setHighlightedItem] = useState({
+    name: "",
+    type: "",
+  });
+
+  console.log(highlightedItem);
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       <div style={{ flex: 0.3, width: "100%", height: "100%" }}>
@@ -100,22 +99,52 @@ const Index = () => {
           onAllClick={handleAllData}
         />
       </div>
-      <div style={{ flex: 1.7, width: '70%' }}>
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          {( highlightedItem.type !== 'subdivision') && (
+      <div style={{ flex: 1.7, width: "70%" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {highlightedItem.type !== "subdivision" && (
             <div style={{ display: "flex", flexDirection: "row" }}>
-              {displayTree ? <button onClick={() => setDisplayTree(false)}>Table View</button> : <button onClick={() => setDisplayTree(true)}>Tree View</button>}
+              {displayTree ? (
+                <button
+                  onClick={() => setDisplayTree(false)}
+                  className="viewToggleBtn"
+                  aria-label="Switch to Table View"
+                >
+                  Table View
+                </button>
+              ) : (
+                <button
+                  onClick={() => setDisplayTree(true)}
+                  className="viewToggleBtn"
+                  aria-label="Switch to Tree View"
+                >
+                  Tree View
+                </button>
+              )}
             </div>
           )}
         </div>
-        {metreModal && <MeterModal data={data} isOpen={metreModal} setIsOpen={setMetreModal} />}
-        { highlightedItem.type === 'subdivision' ? (
+        {metreModal && (
+          <MeterModal
+            data={data}
+            isOpen={metreModal}
+            setIsOpen={setMetreModal}
+          />
+        )}
+        {highlightedItem.type === "subdivision" ? (
+          <RightColumn selectedItem={selectedItem} />
+        ) : displayTree ? (
           <RightColumn selectedItem={selectedItem} />
         ) : (
-          displayTree ? <RightColumn selectedItem={selectedItem} /> : <TableView data={data} item={highlightedItem} />
+          <TableView data={data} item={highlightedItem} />
         )}
       </div>
-
     </div>
   );
 };

@@ -115,7 +115,7 @@
     )}
         <div className="right-column-container">
           <button className="addMetre" onClick={() => setMetreModal(true)}>Add Meter</button>
-          <button onClick={handleImportMeters}>Import Meters</button>
+         
           <div className="filters">
             <input
               type="text"
