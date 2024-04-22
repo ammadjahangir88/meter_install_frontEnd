@@ -65,9 +65,8 @@
   border-radius: 5px;
   transition: background-color 0.3s;
 }
-
-/* Right column container */
 .right-column-container {
+
   padding: 20px;
   background-color: #fff;
   border-radius: 10px;
@@ -75,55 +74,101 @@
   overflow-y: auto;
   margin-left: 20px;
   width: 90%;
-
 }
 
-/* Meter table */
+.filters {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: start;
+}
+
+.filters input[type="text"],
+.filters select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 20px;
+  color: #333;
+  width: 200px; /* Set a fixed width for inputs and selects */
+}
+
+.filters select {
+  cursor: pointer;
+}
+
 .meter-table {
+  width: 100%;
   border-collapse: collapse;
+  background-color: white;
 }
 
 .meter-table th,
 .meter-table td {
-  padding: 12px 8px;
   text-align: left;
+  padding: 8px;
   border-bottom: 1px solid #ddd;
 }
 
 .meter-table th {
-  background-color: #f2f2f2;
+  background-color: #f8f8f8;
 }
 
-.meter-row:hover {
+.meter-table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-/* Search input and button container */
-.search-container {
+.meter-table tr:hover {
+  background-color: #f1f1f1;
+}
+.meter-management-buttons {
   display: flex;
-  align-items: center;
+  justify-content: flex-end;
   margin-bottom: 20px;
 }
-
-.search-input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  margin-right: 10px;
+.addMetre {
+  background-color: #4CAF50; /* Green background */
+  color: white; /* White text */
+  padding: 10px 20px; /* Top and Bottom padding 10px, Left and Right padding 20px */
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  outline: none; /* No outline */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  margin-bottom: 10px;
 }
 
-.search-button {
-  background-color: #007bff;
-  color: #fff;
+.addMetre:hover {
+  background-color: #45a049; /* Darker shade of green on hover */
+}
+
+.addMetre:focus {
+  outline: none; /* Removes the outline to keep focus styles clean */
+  box-shadow: 0 0 0 2px rgba(0,123,255,.25); /* Optional: Adds a light blue shadow for accessibility */
+}
+
+
+.button {
+  padding: 8px 15px;
+  background-color: #007bff; /* Example: Blue background */
+  color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
 
-.search-button:hover {
-  background-color: #0056b3;
+.button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Specific styles for individual buttons if needed */
+.import-button, .export-button {
+  margin-left: 10px; /* Space between buttons */
+  margin-bottom: 20px;
+  padding: 10px;
+
 }
 
 /* Pagination container */
@@ -229,5 +274,71 @@
 .table-view th:last-child, 
 .table-view td:last-child {
   border-right: none; /* Remove border for the last column if not desired permanently */
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000; /* High z-index to overlay on top of other content */
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px; /* Max width for larger screens */
+  text-align: center;
+}
+
+.close {
+  float: right;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.modal-title {
+  margin-top: 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.dropzone {
+  border: 2px dashed #007bff;
+  border-radius: 5px;
+  padding: 20px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.dropzone p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+.import-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.import-button:hover {
+  background-color: #0056b3;
 }
 

@@ -13,9 +13,7 @@ const Navbar = () => {
                 <li><Link to="/">Dashboard</Link></li>
                 <li><Link to="/reporting">Reporting</Link></li>
                 <li><Link to="/meters">Meters</Link></li>
-                <li><Link to="/discos">Discos</Link></li>
-                <li><Link to="/divisions">Division</Link></li>
-                <li><Link to="/subdivisions">Sub Division</Link></li>
+               
                 <li><Link to="/role">Role</Link></li>
                 <li><Link to="/logout">Logout</Link></li>
             </ul>

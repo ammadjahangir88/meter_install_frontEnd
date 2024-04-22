@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
 import "./index.css";
 import axiosInstance from "../utils/Axios";
 import MeterModal from "./meterModal/MeterModal";
-import { FaPlus, FaSearch } from "react-icons/fa";
+
 import RightColumn from "./RightColumn.js";
 import TableView from "./TableView.js";
 import LeftColumn from "./LeftColumn.js";
-import Pagination from "./Pagination";
-
-
 
 
 
@@ -18,9 +15,6 @@ const Index = () => {
   const [selectedItem, setSelectedItem] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [data, setDiscosData] = useState([]);
-  const [searchText, setSearchText] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [displayTree, setDisplayTree] = useState(true); // State to control the display mode
    
   useEffect(() => {
@@ -86,27 +80,10 @@ const Index = () => {
     setSelectedItem(discoMeters);
   };
 
-  function filterData(searchText, data) {
-    console.log(data);
-
-    const filteredData = data.filter((item) => {
-      // Convert reference number and searchText to lowercase for case-insensitive comparison
-      const referenceNo = item.reference_no.toLowerCase();
-      const searchTerm = searchText.toLowerCase();
-      // Check if the reference number includes the searchText
-      return referenceNo.includes(searchTerm);
-    });
-    console.log(filteredData);
-    return filteredData; // Return filtered data instead of the function itself
-  }
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+ 
   const [highlightedItem, setHighlightedItem] = useState({ name: '', type: '' });
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = selectedItem.slice(indexOfFirstItem, indexOfLastItem);
+ 
+  
   console.log(highlightedItem)
   return (
     <div style={{ display: "flex", height: "100vh" }}>
@@ -124,83 +101,21 @@ const Index = () => {
         />
       </div>
       <div style={{ flex: 1.7, width: '70%' }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            {displayTree && ( // Conditionally render table view button when in tree view mode
-              <button onClick={() => setDisplayTree(false)}>Table View</button>
-            )}
-            {!displayTree && ( // Conditionally render tree view button when in table view mode
-              <button onClick={() => setDisplayTree(true)}>Tree View</button>
-            )}
-          </div>
-        
-        </div>
-        {metreModal && (
-          <MeterModal
-            data={data}
-            isOpen={metreModal}
-            setIsOpen={setMetreModal}
-          />
-        )}
-        {displayTree ? (
-          <>
-            {/* Render search input and pagination in tree view mode */}
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  marginRight: "10px",
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <input
-                  type="text"
-                  className="search-input"
-                  placeholder="Search"
-                  value={searchText}
-                  onChange={(e) => {
-                    setSearchText(e.target.value);
-                  }}
-                />
-                <button
-                  className="custom-button"
-                  onClick={() => {
-                    const filteredData = filterData(searchText, selectedItem);
-                    setSelectedItem(filteredData);
-                  }}
-                >
-                  Search
-                </button>
-              </div>
-            
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+          {( highlightedItem.type !== 'subdivision') && (
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              {displayTree ? <button onClick={() => setDisplayTree(false)}>Table View</button> : <button onClick={() => setDisplayTree(true)}>Tree View</button>}
             </div>
-
-            <RightColumn selectedItem={currentItems} />
-            <Pagination
-              currentPage={currentPage}
-              itemsPerPage={itemsPerPage}
-              totalItems={selectedItem.length}
-              onPageChange={handlePageChange}
-            />
-            
-          </>
+          )}
+        </div>
+        {metreModal && <MeterModal data={data} isOpen={metreModal} setIsOpen={setMetreModal} />}
+        { highlightedItem.type === 'subdivision' ? (
+          <RightColumn selectedItem={selectedItem} />
         ) : (
-          <div>
-              {/* <div>{highlightedItem.name} ({highlightedItem.type})</div>  */}
-              <TableView data={data} item={highlightedItem} />
-            
-            
-          </div>
+          displayTree ? <RightColumn selectedItem={selectedItem} /> : <TableView data={data} item={highlightedItem} />
         )}
       </div>
+
     </div>
   );
 };

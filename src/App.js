@@ -10,7 +10,7 @@ import Divisions from "./components/divisions/Divisions";
 
 const App = () => {
   const { token, logout } = useAuth();
-  // logout()
+  //  logout()
   console.log(token);
   return (
     <>
