@@ -81,8 +81,35 @@ const Index = () => {
   const [highlightedItem, setHighlightedItem] = useState({
     name: "",
     type: "",
+    id: ''
   });
+ function updateData(){
+  const fetchData = async () => {
+    try {
+      const response = await axiosInstance.get("/v1/discos");
+      setDiscosData(response.data);
 
+      // Extract all meters from the data
+      const allMeters = response.data.flatMap((disco) =>
+        disco.regions.flatMap((region) =>
+          region.divisions.flatMap((division) =>
+            division.subdivisions.flatMap((subdivision) => subdivision.meters)
+          )
+        )
+      );
+
+      // Set the selected item to all meters initially
+      setSelectedItem(allMeters);
+
+      console.log("All Meters:", allMeters); // Log the final allMeters array
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  fetchData();
+
+ }
   console.log(highlightedItem);
   return (
     <div style={{ display: "flex", height: "100vh" }}>
@@ -142,7 +169,7 @@ const Index = () => {
         ) : displayTree ? (
           <RightColumn selectedItem={selectedItem} />
         ) : (
-          <TableView data={data} item={highlightedItem} />
+          <TableView data={data} item={highlightedItem} updateData={updateData} />
         )}
       </div>
     </div>

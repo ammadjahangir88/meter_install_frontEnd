@@ -13,7 +13,7 @@ const LeftColumn = ({ data, onItemClick, onDiscosClick, onDivisionClick, onRegio
 
   const handleSetSelectedItem = (id, type, name) => {
     setSelectedItem(`${type}-${id}`);
-    setHighlightedItem({ name, type });
+    setHighlightedItem({ name, type,id });
   };
 
   const renderTreeItem = item => (

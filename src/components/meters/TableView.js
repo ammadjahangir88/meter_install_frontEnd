@@ -196,8 +196,14 @@ const TableView = ({ data, item, updateData }) => {
               ? "Disco"
               : item.type === "disco"
               ? "Region"
-              : "Division"
+              : item.type === "region"
+              ? "Division"
+              : "Subdivision"
           }
+          itemId={item.id}
+          parentName={item.name}
+          updateData={updateData}
+          
         />
         <button
           className="table-view-button"

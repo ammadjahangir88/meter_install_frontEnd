@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Discos from './components/discos/Discos'
 import Subdivision from "./components/subdivisions/Subdivision";
 import Divisions from "./components/divisions/Divisions";
+import Dashboard from "./components/dashboard/Dashboard";
 
 const App = () => {
   const { token, logout } = useAuth();
@@ -24,6 +25,7 @@ const App = () => {
             </>
           ) : (
             <>
+             <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/meters" element={<Meters />} />
               <Route path="/discos" element={<Discos />} />
               <Route path="/divisions" element={<Divisions />} />
