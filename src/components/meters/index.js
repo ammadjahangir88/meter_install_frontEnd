@@ -167,7 +167,7 @@ const Index = () => {
         {highlightedItem.type === "subdivision" ? (
           <RightColumn selectedItem={selectedItem} />
         ) : displayTree ? (
-          <RightColumn selectedItem={selectedItem} />
+          <RightColumn selectedItem={selectedItem} item={highlightedItem} />
         ) : (
           <TableView data={data} item={highlightedItem} updateData={updateData} />
         )}

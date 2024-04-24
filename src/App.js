@@ -11,7 +11,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 
 const App = () => {
   const { token, logout } = useAuth();
-  //  logout()
+//  logout()  // 
   console.log(token);
   return (
     <>
@@ -25,12 +25,14 @@ const App = () => {
             </>
           ) : (
             <>
+            <Route path="/" element={<Dashboard />} />
+          
              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/meters" element={<Meters />} />
               <Route path="/discos" element={<Discos />} />
               <Route path="/divisions" element={<Divisions />} />
               <Route path="/subdivisions" element={<Subdivision />} />
-              <Route path="*" element={<Navigate to="/meters" />} />
+    
             </>
           )}
         </Routes>
