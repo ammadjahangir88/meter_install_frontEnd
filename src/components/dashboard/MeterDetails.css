@@ -1,0 +1,52 @@
+/* TableView styles */
+.table-view-container {
+    margin: 20px;
+  }
+  
+  .table-view-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+  
+  .table-view-button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .table-view-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .table-view {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table-view th, 
+  .table-view td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .table-view th {
+    background-color: #f2f2f2;
+  }
+  .table-view th, 
+  .table-view td {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ccc; /* Temporary border to visualize cell dimensions */
+  }
+  
+  .table-view th:last-child, 
+  .table-view td:last-child {
+    border-right: none; /* Remove border for the last column if not desired permanently */
+  }
+  
