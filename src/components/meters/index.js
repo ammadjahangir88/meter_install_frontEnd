@@ -112,8 +112,8 @@ const Index = () => {
  }
   console.log(highlightedItem);
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      <div style={{ flex: 0.3, width: "100%", height: "100%" }}>
+    <div style={{ display: "flex", height: "auto", minHeight:'100vh' }}>
+      <div style={{ flex: 0.3, width: "100%"  }}>
         <LeftColumn
           data={data}
           setSelectedItem={setSelectedItemId} // Make sure this is correct
@@ -126,7 +126,7 @@ const Index = () => {
           onAllClick={handleAllData}
         />
       </div>
-      <div style={{ flex: 1.7, width: "70%" }}>
+      <div style={{ flex: 1.7, width: "70%"  }}>
         <div
           style={{
             display: "flex",

@@ -21,6 +21,7 @@ const RightColumn = ({ selectedItem }) => {
     setTelcoFilter("");
     setMeterTypeFilter("");
     setStatusFilter("");
+    setCurrentPage(1)
   }, [selectedItem]);
 
   const handlePageChange = (pageNumber) => {

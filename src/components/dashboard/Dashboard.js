@@ -5,7 +5,7 @@ import axiosInstance from '../utils/Axios';
 import './Dashboard.css';
 import MeterDetails from './MeterDetails';
 import { useNavigate } from 'react-router-dom'; 
-
+import { useAuth } from '../utils/AuthContext';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, PieController);
@@ -15,6 +15,7 @@ function Dashboard() {
   const [activeIndex, setActiveIndex] = useState(null);  // State to track the active segment index
   const [divisionData, setDivisionData] = useState(null); // State to store data for the selected division
   const navigate = useNavigate();
+  const { logout } = useAuth(); // Use useAuth hook here
   useEffect(() => {
     fetchData();
   }, []);

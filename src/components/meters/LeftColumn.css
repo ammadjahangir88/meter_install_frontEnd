@@ -1,48 +1,46 @@
 /* Base styles for the left column container */
 .left-column {
-    background-color: #f6f8fa; /* Light gray background for the entire column */  
+    background-color: #e9eff1; /* Subtle blue-gray background for the entire column */
     box-sizing: border-box; /* Include padding in the width and height */
-    background-color: #f6f8fa;
     padding: 20px;
     height: 100%;
     overflow-y: auto;
     width: 350px;
-  }
-  
-  /* General styles for all tree items */
-  .tree-item, .tree-sub-item, .tree-sub-sub-item, .tree-sub-sub-sub-item {
+}
+
+/* General styles for all tree items */
+.tree-item, .tree-sub-item, .tree-sub-sub-item, .tree-sub-sub-sub-item {
     padding: 10px 5px; /* Padding for each item */
     font-size: 16px; /* Font size for text */
     cursor: pointer; /* Cursor indicates clickable items */
-    color: #333; /* Dark gray text color for readability */
-  }
-  
-  /* Hover effect for all items to improve interactivity */
-  .tree-item:hover, .tree-sub-item:hover, .tree-sub-sub-item:hover, .tree-sub-sub-sub-item:hover {
-    background-color: #e6e6e6; /* Lighter gray background on hover */
+    color: #2c3e50; /* Updated to a rich navy blue for better readability */
+}
+
+/* Hover effect for all items to improve interactivity */
+.tree-item:hover, .tree-sub-item:hover, .tree-sub-sub-item:hover, .tree-sub-sub-sub-item:hover {
+    background-color: #d1dce2; /* A lighter shade for hover effect */
     border-radius: 5px; /* Rounded corners for the hover effect */
     transition: background-color 0.3s; /* Smooth transition for the background color */
-  }
-  
-  /* Highlighting for selected items */
-  .tree-item-header.highlighted,
-  .tree-sub-item-header.highlighted,
-  .tree-sub-sub-item-header.highlighted,
-  .tree-sub-sub-sub-item-header.highlighted {
-    background-color: #ddeeff; /* Blue background for highlighted items */
-    color: #0056b3; /* Darker blue text color for contrast */
-  }
-  
-  /* Indentation to visually represent hierarchy */
-  .tree-sub-item {
+}
+
+/* Highlighting for selected items */
+.tree-item-header.highlighted,
+.tree-sub-item-header.highlighted,
+.tree-sub-sub-item-header.highlighted,
+.tree-sub-sub-sub-item-header.highlighted {
+    background-color: #a4c3b2; /* Muted green background for highlighted items */
+    color: #276a73; /* Deep teal text color for contrast */
+}
+
+/* Indentation to visually represent hierarchy */
+.tree-sub-item {
     margin-left: 20px; /* Indent regions under discos */
-  }
-  
-  .tree-sub-sub-item {
+}
+
+.tree-sub-sub-item {
     margin-left: 40px; /* Indent divisions under regions */
-  }
-  
-  .tree-sub-sub-sub-item {
+}
+
+.tree-sub-sub-sub-item {
     margin-left: 60px; /* Indent subdivisions under divisions */
-  }
-  
+}

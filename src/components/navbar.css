@@ -1,13 +1,14 @@
 /* Navbar.css */
 
 nav {
-    background-color: #e8f9fd;
-    color: black;
+    background-color: #005792; /* Darker shade for better contrast */
+    color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 15px 20px; /* Slightly larger padding for better touch targets */
     font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
 }
 
 nav ul {
@@ -19,19 +20,30 @@ nav ul {
 
 nav ul li {
     margin-right: 20px;
+    transition: transform 0.3s ease; /* Smooth transition for hover effects */
 }
 
 nav ul li:last-child {
     margin-right: 0;
 }
 
-nav ul li a {
-    color: black;
- 
+nav ul li a, nav ul li button {
+    color: white;
+    background: none;
+    border: none;
     text-decoration: none;
+    cursor: pointer;
+    font-size: 16px; /* Increased font size for readability */
+    display: block;
+    transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+nav ul li a:hover, nav ul li button:hover {
+    color: #FFD700; /* Gold color for hover */
+    transform: translateY(-3px); /* Slight raise effect on hover */
 }
 
 .logo {
-   width: 80px;
-   height: auto;
+    width: 100px; /* Adjust logo size as needed */
+    height: auto;
 }
