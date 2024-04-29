@@ -14,29 +14,32 @@ const Index = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [data, setDiscosData] = useState([]);
   const [displayTree, setDisplayTree] = useState(true); // State to control the display mode
+  const [loading, setLoading] = useState(false);  // Loading state
+  const [highlightedItem, setHighlightedItem] = useState({
+    name: "",
+    type: "all",
+    id: ''
+  });
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);  // Start loading
       try {
         const response = await axiosInstance.get("/v1/discos");
         setDiscosData(response.data);
-
-        // Extract all meters from the data
-        const allMeters = response.data.flatMap((disco) =>
-          disco.regions.flatMap((region) =>
-            region.divisions.flatMap((division) =>
-              division.subdivisions.flatMap((subdivision) => subdivision.meters)
+        const allMeters = response.data.flatMap(disco =>
+          disco.regions.flatMap(region =>
+            region.divisions.flatMap(division =>
+              division.subdivisions.flatMap(subdivision => subdivision.meters)
             )
           )
         );
-
-        // Set the selected item to all meters initially
         setSelectedItem(allMeters);
-
-        console.log("All Meters:", allMeters); // Log the final allMeters array
+        console.log("All Meters:", allMeters);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
+      setLoading(false);  // Stop loading
     };
 
     fetchData();
@@ -78,11 +81,7 @@ const Index = () => {
     setSelectedItem(discoMeters);
   };
 
-  const [highlightedItem, setHighlightedItem] = useState({
-    name: "",
-    type: "",
-    id: ''
-  });
+ 
  function updateData(){
   const fetchData = async () => {
     try {
@@ -111,6 +110,9 @@ const Index = () => {
 
  }
   console.log(highlightedItem);
+  if (loading) {
+    return <div className="Loader">Loading...</div>;  // Render loading indicator
+  }
   return (
     <div style={{ display: "flex", height: "auto", minHeight:'100vh' }}>
       <div style={{ flex: 0.3, width: "100%"  }}>
@@ -167,7 +169,7 @@ const Index = () => {
         {highlightedItem.type === "subdivision" ? (
           <RightColumn selectedItem={selectedItem} />
         ) : displayTree ? (
-          <RightColumn selectedItem={selectedItem} item={highlightedItem} />
+          <RightColumn selectedItem={selectedItem} item={highlightedItem}  updateData={updateData} />
         ) : (
           <TableView data={data} item={highlightedItem} updateData={updateData} />
         )}

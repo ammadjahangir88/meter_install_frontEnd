@@ -9,13 +9,14 @@
     border: 2px solid #f0f0f0; /* Border around the login container */
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Off white shadow */
+    margin-top: 7%;
   }
   
  
   
   .logo {
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: auto;
   }
   
   .form-container {
@@ -41,7 +42,7 @@
   }
   
   input {
-    width: 100%;
+    width: 94%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;

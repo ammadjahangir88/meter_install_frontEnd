@@ -369,3 +369,25 @@
   box-shadow: 0 0 0 2px rgba(34, 193, 195, 0.2);
 }
 
+.delete-meters-button {
+  background-color: #f44336;  /* Red background for delete actions */
+  color: white;  /* White text color */
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  margin-left: 5px;
+}
+
+.delete-meters-button:hover {
+  background-color: #d32f2f;  /* Darken the red on hover */
+}
+
+.delete-meters-button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+

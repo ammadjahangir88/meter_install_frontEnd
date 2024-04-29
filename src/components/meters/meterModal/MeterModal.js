@@ -5,6 +5,8 @@ import './MeterModal.css';
 import axiosInstance from '../../utils/Axios';
 
 function MeterModal({ isOpen, setIsOpen }) {
+  const [errors, setErrors] = useState({});
+
   const [formData, setFormData] = useState({
     NEW_METER_NUMBER: '',
     REF_NO: '',
@@ -57,6 +59,9 @@ function MeterModal({ isOpen, setIsOpen }) {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
+     // Validate form data
+  if (!validateFormData()) return; // Stop the submission if validation fails
+
     const formDataToSend = new FormData();
   
     // Append all fields to formDataToSend, properly nested under 'meter'
@@ -109,10 +114,30 @@ function MeterModal({ isOpen, setIsOpen }) {
       console.log('Server Response:', response);
     } catch ( error ) {
       console.error('Error submitting form:', error);
-      alert('Failed to submit the form.');
+      let errorMessage = 'Failed to submit the form.';
+    
+      if (error.response && error.response.status === 422) {
+        // If the errors are an array of strings:
+        errorMessage += '\n' + error.response.data.errors.join('\n');
+      } else if (error.response) {
+        // Non-validation related error handling
+        errorMessage += ` Error: ${error.response.statusText} (${error.response.status})`;
+      }
+    
+      alert(errorMessage);
     }
   };
   
+  const validateFormData = () => {
+    let newErrors = {};
+    // Check required fields are not empty
+    if (!formData.NEW_METER_NUMBER.trim()) newErrors.NEW_METER_NUMBER = 'New meter number is required.';
+    if (!formData.REF_NO.trim()) newErrors.REF_NO = 'Reference number is required.';
+    // Add other validations as needed
+  
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
   
 
   return (
@@ -123,23 +148,65 @@ function MeterModal({ isOpen, setIsOpen }) {
           <FaTimes className="meter-close-icon" onClick={() => setIsOpen(false)} />
         </div>
         <form onSubmit={handleSubmit} className="meter-modal-content">
-          {Object.entries(formData).map(([key, value]) => (
-            <div className="input-group" key={key}>
-              <label htmlFor={key}>{key.replace(/_/g, ' ')}:</label>
-              {key === 'PICTURE_UPLOAD' ? (
-                <input type="file" id={key} name={key} onChange={handleChange} />
-              ) : key === 'QC_CHECK' ? (
-                <input type="checkbox" id={key} name={key} checked={value} onChange={handleChange} />
-              ) : (
-                <input type="text" id={key} name={key} value={value} onChange={handleChange} />
-              )}
-            </div>
-          ))}
-          <div className="meter-modal-footer">
-            <button type="submit" className="meter-submit-button">Submit</button>
-            <button type="button" className="meter-cancel-button" onClick={() => setIsOpen(false)}>Cancel</button>
-          </div>
-        </form>
+  {Object.entries(formData).map(([key, value]) => (
+    <div className="input-group" key={key}>
+      <label htmlFor={key}>{key.replace(/_/g, ' ')}:</label>
+      {key === 'PICTURE_UPLOAD' ? (
+        <input type="file" id={key} name={key} onChange={handleChange} />
+      ) : key === 'QC_CHECK' ? (
+        <input type="checkbox" id={key} name={key} checked={value} onChange={handleChange} />
+      ) : key === 'METER_TYPE' ? (
+        <select id={key} name={key} value={value} onChange={handleChange}>
+          <option value="">Select Meter Type</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      ) : key === 'GREEN_METER' ? (
+        <select id={key} name={key} value={value} onChange={handleChange}>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      ) : key === 'CONNECTION_TYPE' ? (
+        <select id={key} name={key} value={value} onChange={handleChange}>
+          <option value="">Select Connection Type</option>
+          <option value="Residential">Residential</option>
+          <option value="Commercial">Commercial</option>
+          <option value="Industrial">Industrial</option>
+          <option value="Street">Street</option>
+          <option value="Domestic">Domestic</option>
+          <option value="Agricultural">Agricultural</option>
+          <option value="Colony">Colony</option>
+          <option value="Street light">Street light</option>
+        </select>
+      ) : key === 'TELCO' ? (
+        <select id={key} name={key} value={value} onChange={handleChange}>
+          <option value="">Select Telco</option>
+          <option value="Jazz">Jazz</option>
+          <option value="Warid">Warid</option>
+          <option value="Ufone">Ufone</option>
+          <option value="Telenor">Telenor</option>
+          <option value="Zong">Zong</option>
+        </select>
+      ) : (
+        <input type="text" id={key} name={key} value={value} onChange={handleChange} />
+      )}
+      {/* Display error messages */}
+      {errors[key] && (
+        <>
+          <br />
+          <div className="error">{errors[key]}</div>
+        </>
+      )}
+    </div>
+  ))}
+  {errors.form && <div className="error">{errors.form}</div>}
+  <div className="meter-modal-footer">
+    <button type="submit" className="meter-submit-button">Submit</button>
+    <button type="button" className="meter-cancel-button" onClick={() => setIsOpen(false)}>Cancel</button>
+  </div>
+</form>
+
       </Dialog.Panel>
     </Dialog>
   );

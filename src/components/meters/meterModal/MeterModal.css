@@ -1,3 +1,4 @@
+/* Base modal styling */
 .meter-modal {
   position: fixed;
   top: 50%;
@@ -9,8 +10,10 @@
   background-color: #fffffe;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensures modal is on top of other content */
 }
 
+/* Header styling for clarity and spacing */
 .meter-create-header {
   display: flex;
   justify-content: space-between;
@@ -21,14 +24,18 @@
   border-top-right-radius: 10px;
 }
 
+/* Clickable icon with appropriate cursor */
 .meter-close-icon {
   cursor: pointer;
+  font-size: 1.5rem; /* Slightly larger icon */
 }
 
+/* Padding for content inside the modal */
 .meter-modal-content {
   padding: 20px;
 }
 
+/* Footer styling for button alignment */
 .meter-modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -38,6 +45,7 @@
   border-bottom-right-radius: 10px;
 }
 
+/* Button styling for submission and cancellation */
 .meter-submit-button,
 .meter-cancel-button {
   margin-left: 10px;
@@ -45,60 +53,70 @@
   border-radius: 5px;
   border: none;
   cursor: pointer;
+  font-weight: bold; /* Makes text a bit bolder */
 }
 
+/* Styling specific to input types for consistency */
 .input-group {
   margin-bottom: 15px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap; /* Ensures responsiveness */
 }
 
 .input-group label {
   margin-right: 10px;
-  flex: 1;
+  flex: 1 1 100px; /* Flex basis of 100px with flexibility */
 }
 
 .input-group input[type="text"],
-.input-group input[type="file"] {
+.input-group input[type="file"],
+.input-group select {
   flex: 2;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%; /* Ensures full width within its flex container */
 }
 
 .input-group input[type="checkbox"] {
-  align-items:start;
- 
+  margin-top: 8px; /* Aligns better with label if alone on line */
 }
 
-/* Custom styling for file input */
-.input-file-container {
-  display: flex;
-  align-items: center;
-  background-color: #f1f1f1;
-  padding: 6px;
-  border-radius: 4px;
-  cursor: pointer;
+/* Enhanced visual feedback for interactive elements */
+.input-group select,
+.input-group input[type="text"],
+.input-group input[type="file"],
+.input-group input[type="checkbox"] {
+  transition: border-color 0.3s ease-in-out;
 }
 
-.input-file-button {
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
+.input-group input[type="checkbox"] {
+  align-items: start;
 }
 
-.input-file-text {
-  margin-left: 10px;
-  vertical-align: middle;
+/* Hover and focus states for inputs for better user experience */
+.input-group input:hover,
+.input-group select:hover,
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #007bff; /* Light blue focus color */
 }
+
+/* Styling for active submission button */
 .meter-submit-button {
-  background-color: #4caf50;
+  background-color: #4caf50; /* Green for go/submit */
   color: white;
 }
 
+/* Styling for cancellation button */
 .meter-cancel-button {
-  background-color: #f44336;
+  background-color: #f44336; /* Red for stop/cancel */
   color: white;
+}
+
+/* Error message styling */
+.error {
+  color: red;
+  margin-top: 4px;
 }

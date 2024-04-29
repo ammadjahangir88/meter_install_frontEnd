@@ -43,7 +43,7 @@ nav ul li a:hover, nav ul li button:hover {
     transform: translateY(-3px); /* Slight raise effect on hover */
 }
 
-.logo {
+.logo-navbar {
     width: 100px; /* Adjust logo size as needed */
     height: auto;
 }

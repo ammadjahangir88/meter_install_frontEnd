@@ -5,8 +5,9 @@ import MeterModal from './meterModal/MeterModal';
 import "./index.css";
 import axiosInstance from "../utils/Axios";
 import './RightColumn.css'
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
-const RightColumn = ({ selectedItem }) => {
+const RightColumn = ({ selectedItem, updateData }) => {
   const [telcoFilter, setTelcoFilter] = useState('');
   const [meterTypeFilter, setMeterTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -14,6 +15,8 @@ const RightColumn = ({ selectedItem }) => {
   const [itemsPerPage, setItemsPerPage] = useState(15);
   const [metreModal, setMetreModal] = useState(false);
   const [importModal, setImportModal] = useState(false);
+  const [selectedMeters, setSelectedMeters] = useState([]);
+
   const [file, setFile] = useState(null);
 
   useEffect(() => {
@@ -102,7 +105,40 @@ const RightColumn = ({ selectedItem }) => {
       console.error('Error exporting meters:', error);
     });
   };
+  const handleMeterSelection = (id) => {
+    setSelectedMeters(prev =>
+      prev.includes(id) ? prev.filter(meterId => meterId !== id) : [...prev, id]
+    );
+  };
+  
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedMeters(currentItems.map(item => item.id));
+    } else {
+      setSelectedMeters([]);
+    }
+  };
 
+  const handleDeleteSelected = async () => {
+    if (selectedMeters.length === 0) {
+      alert("No meters selected for deletion.");
+      return;
+    }
+    try {
+      const response = await axiosInstance.delete('/v1/meters/bulk_delete', {
+        data: { meter_ids: selectedMeters }  // Make sure to send meter IDs
+      });
+      alert('Selected meters deleted successfully!');
+      setSelectedMeters([]);  // Clear selections
+      updateData()
+      
+      // Optionally, fetch the updated list or modify state to remove deleted items
+    } catch (error) {
+      console.error('Failed to delete meters:', error);
+      alert('Failed to delete selected meters: ' + error.response.data.error);
+    }
+  };
+  
   return (
     <>
       {metreModal && (
@@ -123,7 +159,9 @@ const RightColumn = ({ selectedItem }) => {
       )}
       <div className="right-column-container">
         <button className="addMetre" onClick={() => setMetreModal(true)}>Add Meter</button>
-
+        <button className="delete-meters-button" onClick={handleDeleteSelected} disabled={selectedMeters.length === 0}>
+  Delete Selected Meters
+</button>
         <div className="filters">
           <input
             type="text"
@@ -188,6 +226,7 @@ const RightColumn = ({ selectedItem }) => {
                 <th>CUMULATIVE_MDI_T1</th>
                 <th>CUMULATIVE_MDI_T2</th>
                 <th>CUMULATIVE_MDI_Total</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -231,6 +270,13 @@ const RightColumn = ({ selectedItem }) => {
                   <td>{meter.CUMULATIVE_MDI_T1}</td>
                   <td>{meter.CUMULATIVE_MDI_T2}</td>
                   <td>{meter.CUMULATIVE_MDI_Total}</td>
+                  <td>
+        <input
+          type="checkbox"
+          checked={selectedMeters.includes(meter.id)}
+          onChange={() => handleMeterSelection(meter.id)}
+        />
+      </td>
                 </tr>
               ))}
             </tbody>

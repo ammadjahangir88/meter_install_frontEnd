@@ -6,6 +6,28 @@ import './Dashboard.css';
 import MeterDetails from './MeterDetails';
 import { useNavigate } from 'react-router-dom'; 
 import { useAuth } from '../utils/AuthContext';
+const colors = [
+    "#FF5733", // Red Orange
+    "#33FF57", // Neon Green
+    "#3357FF", // Azure Radiance
+    "#F333FF", // Electric Violet
+    "#FF338F", // Cerise Red
+    "#FAAAFF", // Screamin Green
+    "#FFA633", // Neon Carrot
+    "#339BFF", // Curious Blue
+    "#8F33FF", // Electric Purple
+    "#FF5733", // Persian Red
+    "#FFAF33", // Sandy Brown
+    "#FF335E", // Sunset Orange
+    "#33FF8F", // Medium Aquamarine
+    "#8F5733", // Raw Umber
+    "#57A0FF", // Malibu
+    "#FF3333", // Red
+    "#33FFAF", // Caribbean Green
+    "#7F33FF", // Electric Indigo
+    "#FFC433", // Saffron
+    "#33D4FF"  // Spray
+];
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, PieController);
@@ -46,28 +68,28 @@ function Dashboard() {
         ids: data.divisionData.map(item => item.id), // Assuming the API now includes IDs
         datasets: [{
           data: data.divisionData.map(item => item.value),
-          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
+          backgroundColor: colors
         }]
       },
       status: {
         labels: data.statusData.map(item => item.name),
         datasets: [{
           data: data.statusData.map(item => item.value),
-          backgroundColor: ['#FF9F40', '#FFCD56', '#C9CBFF']
+          backgroundColor: colors
         }]
       },
       tariff: {
         labels: data.tariffData.map(item => item.name),
         datasets: [{
           data: data.tariffData.map(item => item.value),
-          backgroundColor: ['#845EC2', '#D65DB1', '#FF6F91']
+          backgroundColor: colors
         }]
       },
       telecom: {
         labels: data.telecomData.map(item => item.name),
         datasets: [{
           data: data.telecomData.map(item => item.value),
-          backgroundColor: ['#0088FE']
+          backgroundColor: colors
         }]
       }
     };

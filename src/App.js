@@ -10,6 +10,9 @@ import Divisions from "./components/divisions/Divisions";
 import Dashboard from "./components/dashboard/Dashboard";
 import MeterDetails from "./components/dashboard/MeterDetails";
 import { useNavigate } from "react-router-dom";
+import UsersTable from "./components/users/User";
+import EditUser from "./components/users/EditUser";
+import Reports from "./reports/Reports";
 
 const App = () => {
   const { token, logout } = useAuth();
@@ -33,7 +36,8 @@ const App = () => {
   return (
     <>
       <BrowserRouter>
-        <Navbar />
+      {token && <Navbar />}
+       
         <Routes>
           {!token ? (
             <>
@@ -50,6 +54,9 @@ const App = () => {
               <Route path="/discos" element={<Discos />} />
               <Route path="/divisions" element={<Divisions />} />
               <Route path="/subdivisions" element={<Subdivision />} />
+              <Route path="/role" element={<UsersTable />} />
+              <Route path="/users/edit/:id" element={<EditUser />} />
+              <Route path="/reporting" element={<Reports />} />
             </>
           )}
         </Routes>

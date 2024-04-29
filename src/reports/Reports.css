@@ -1,0 +1,45 @@
+.reports-meters-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  }
+  
+  .reports-filters {
+    margin-bottom: 20px;
+  }
+  
+  .reports-select {
+    margin-right: 10px;
+    padding: 5px;
+  }
+  
+  .reports-date-input {
+    padding: 5px;
+  }
+  
+  .reports-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .reports-table th, .reports-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  
+
+  
+  
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  button:disabled {
+    background-color: #6c757d;
+  }
+  
