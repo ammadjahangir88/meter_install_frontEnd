@@ -70,3 +70,10 @@
     width: 300px;
     
 }
+.error-message {
+  color: #ff0000; 
+  font-size: 18px; 
+  margin-top: 10px; 
+  text-align: center;
+  font-weight: bold; 
+}

@@ -29,7 +29,7 @@ function MeterModal({ isOpen, setIsOpen }) {
     TELCO: '',
     SIM_NO: '',
     SIGNAL_STRENGTH: '',
-    PICTURE_UPLOAD: null,
+    image: null,
     METR_REPLACE_DATE_TIME: '',
     NO_OF_RESET_OLD_METER: '',
     NO_OF_RESET_NEW_METER: '',
@@ -86,7 +86,7 @@ function MeterModal({ isOpen, setIsOpen }) {
     formDataToSend.append('meter[TELCO]', formData.TELCO);
     formDataToSend.append('meter[SIM_NO]', formData.SIM_NO);
     formDataToSend.append('meter[SIGNAL_STRENGTH]', formData.SIGNAL_STRENGTH);
-    formDataToSend.append('meter[PICTURE_UPLOAD]', formData.PICTURE_UPLOAD);
+    formDataToSend.append('meter[image]', formData.image);
     formDataToSend.append('meter[METR_REPLACE_DATE_TIME]', formData.METR_REPLACE_DATE_TIME);
     formDataToSend.append('meter[NO_OF_RESET_OLD_METER]', formData.NO_OF_RESET_OLD_METER);
     formDataToSend.append('meter[NO_OF_RESET_NEW_METER]', formData.NO_OF_RESET_NEW_METER);
@@ -102,6 +102,8 @@ function MeterModal({ isOpen, setIsOpen }) {
     formDataToSend.append('meter[CUMULATIVE_MDI_T1]', formData.CUMULATIVE_MDI_T1);
     formDataToSend.append('meter[CUMULATIVE_MDI_T2]', formData.CUMULATIVE_MDI_T2);
     formDataToSend.append('meter[CUMULATIVE_MDI_Total]', formData.CUMULATIVE_MDI_Total);
+    
+    
   
     try {
       const response = await axiosInstance.post('/v1/meters', formDataToSend, {
@@ -151,7 +153,7 @@ function MeterModal({ isOpen, setIsOpen }) {
   {Object.entries(formData).map(([key, value]) => (
     <div className="input-group" key={key}>
       <label htmlFor={key}>{key.replace(/_/g, ' ')}:</label>
-      {key === 'PICTURE_UPLOAD' ? (
+      {key === 'image' ? (
         <input type="file" id={key} name={key} onChange={handleChange} />
       ) : key === 'QC_CHECK' ? (
         <input type="checkbox" id={key} name={key} checked={value} onChange={handleChange} />

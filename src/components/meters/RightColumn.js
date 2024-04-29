@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useDropzone } from 'react-dropzone';
+import { useDropzone } from "react-dropzone";
 import Pagination from "./Pagination";
-import MeterModal from './meterModal/MeterModal';
+import MeterModal from "./meterModal/MeterModal";
 import "./index.css";
 import axiosInstance from "../utils/Axios";
-import './RightColumn.css'
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import "./RightColumn.css";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
-const RightColumn = ({ selectedItem, updateData }) => {
-  const [telcoFilter, setTelcoFilter] = useState('');
-  const [meterTypeFilter, setMeterTypeFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+const RightColumn = ({ selectedItem, updateData, item }) => {
+  console.log(item.type);
+  const [search, setSearch] = useState({ meterNo: "", refNo: "" });
+  const [connectionTypeFilter, setConnectionTypeFilter] = useState("");
+  const [telcoFilter, setTelcoFilter] = useState("");
+  const [meterTypeFilter, setMeterTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(15);
   const [metreModal, setMetreModal] = useState(false);
@@ -24,55 +27,67 @@ const RightColumn = ({ selectedItem, updateData }) => {
     setTelcoFilter("");
     setMeterTypeFilter("");
     setStatusFilter("");
-    setCurrentPage(1)
+    setCurrentPage(1);
   }, [selectedItem]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const filteredItems = selectedItem ? selectedItem.filter(meter => {
-    return (
-      (telcoFilter ? meter.TELCO && meter.TELCO.includes(telcoFilter) : true) &&
-      (meterTypeFilter ? meter.METER_TYPE === meterTypeFilter : true) &&
-      (statusFilter ? meter.METER_STATUS === statusFilter : true)
-    );
-  }) : [];
+  const filteredItems = selectedItem
+    ? selectedItem.filter((meter) => {
+        return (
+          (telcoFilter
+            ? meter.TELCO && meter.TELCO.includes(telcoFilter)
+            : true) &&
+          (connectionTypeFilter
+            ? meter.CONNECTION_TYPE === connectionTypeFilter
+            : true) &&
+          (statusFilter ? meter.METER_STATUS === statusFilter : true) &&
+          (search.meterNo
+            ? meter.NEW_METER_NUMBER.includes(search.meterNo)
+            : true) &&
+          (search.refNo ? meter.REF_NO.includes(search.refNo) : true)
+        );
+      })
+    : [];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: acceptedFiles => {
+    onDrop: (acceptedFiles) => {
       setFile(acceptedFiles[0]);
     },
-    accept: 'text/csv'
+    accept: "text/csv",
   });
-
 
   const handleImportMeters = () => {
     if (!file) {
-      alert('Please select a CSV file to import!');
+      alert("Please select a CSV file to import!");
       return;
     }
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
-    axiosInstance.post('/v1/meters/import', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    .then(response => {
-      alert('Meters imported successfully!');
-      setImportModal(false);  // Close the modal
-      setFile(null);  // Reset file
-    })
-    .catch(error => {
-      console.error('Import failed:', error);
-      alert('Failed to import meters: ' + error.message);
-    });
+    axiosInstance
+      .post("/v1/meters/import", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        updateData();
+        alert("Meters imported successfully!");
+
+        setImportModal(false); // Close the modal
+        setFile(null); // Reset file
+      })
+      .catch((error) => {
+        console.error("Import failed:", error);
+        alert("Failed to import meters: " + error.message);
+      });
   };
 
   const toggleImportModal = () => {
@@ -80,40 +95,41 @@ const RightColumn = ({ selectedItem, updateData }) => {
     setImportModal(!importModal);
   };
 
-
   const handleExportMeters = () => {
     console.log("Exporting meters...");
-    const meterIds = filteredItems.map(item => item.id);
+    const meterIds = filteredItems.map((item) => item.id);
     console.log("Filtered Items:", filteredItems); // Log to confirm items
 
     axiosInstance({
-      url: '/v1/meters/export',
-      method: 'POST',
-      responseType: 'blob', 
-      data: { meter_ids: meterIds }
+      url: "/v1/meters/export",
+      method: "POST",
+      responseType: "blob",
+      data: { meter_ids: meterIds },
     })
-    .then((response) => {
-      const fileURL = window.URL.createObjectURL(new Blob([response.data]));
-      const fileLink = document.createElement('a');
-      fileLink.href = fileURL;
-      fileLink.setAttribute('download', 'exported_meters.csv'); // Set file name
-      document.body.appendChild(fileLink);
-      fileLink.click();
-      fileLink.remove(); // Clean up after download
-    })
-    .catch((error) => {
-      console.error('Error exporting meters:', error);
-    });
+      .then((response) => {
+        const fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        const fileLink = document.createElement("a");
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", "exported_meters.csv"); // Set file name
+        document.body.appendChild(fileLink);
+        fileLink.click();
+        fileLink.remove(); // Clean up after download
+      })
+      .catch((error) => {
+        console.error("Error exporting meters:", error);
+      });
   };
   const handleMeterSelection = (id) => {
-    setSelectedMeters(prev =>
-      prev.includes(id) ? prev.filter(meterId => meterId !== id) : [...prev, id]
+    setSelectedMeters((prev) =>
+      prev.includes(id)
+        ? prev.filter((meterId) => meterId !== id)
+        : [...prev, id]
     );
   };
-  
+
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedMeters(currentItems.map(item => item.id));
+      setSelectedMeters(currentItems.map((item) => item.id));
     } else {
       setSelectedMeters([]);
     }
@@ -125,20 +141,20 @@ const RightColumn = ({ selectedItem, updateData }) => {
       return;
     }
     try {
-      const response = await axiosInstance.delete('/v1/meters/bulk_delete', {
-        data: { meter_ids: selectedMeters }  // Make sure to send meter IDs
+      const response = await axiosInstance.delete("/v1/meters/bulk_delete", {
+        data: { meter_ids: selectedMeters }, // Make sure to send meter IDs
       });
-      alert('Selected meters deleted successfully!');
-      setSelectedMeters([]);  // Clear selections
-      updateData()
-      
+      alert("Selected meters deleted successfully!");
+      setSelectedMeters([]); // Clear selections
+      updateData();
+
       // Optionally, fetch the updated list or modify state to remove deleted items
     } catch (error) {
-      console.error('Failed to delete meters:', error);
-      alert('Failed to delete selected meters: ' + error.response.data.error);
+      console.error("Failed to delete meters:", error);
+      alert("Failed to delete selected meters: " + error.response.data.error);
     }
   };
-  
+
   return (
     <>
       {metreModal && (
@@ -147,42 +163,89 @@ const RightColumn = ({ selectedItem, updateData }) => {
       {importModal && (
         <div className="modal">
           <div className="modal-content">
-            <span className="close" onClick={toggleImportModal}>&times;</span>
+            <span className="close" onClick={toggleImportModal}>
+              &times;
+            </span>
             <h3 className="modal-title">Import Meters</h3>
-            <div {...getRootProps({ className: 'dropzone' })}>
+            <div {...getRootProps({ className: "dropzone" })}>
               <input {...getInputProps()} />
               <p>Drag 'n' drop a CSV file here, or click to select a file</p>
             </div>
-            <button className="import-button" onClick={handleImportMeters}>Import Meters</button>
+            <button className="import-button" onClick={handleImportMeters}>
+              Import Meters
+            </button>
           </div>
         </div>
       )}
       <div className="right-column-container">
-        <button className="addMetre" onClick={() => setMetreModal(true)}>Add Meter</button>
-        <button className="delete-meters-button" onClick={handleDeleteSelected} disabled={selectedMeters.length === 0}>
-  Delete Selected Meters
-</button>
+        {item.type === "subdivision" && (
+          <button className="addMetre" onClick={() => setMetreModal(true)}>
+            Add Meter
+          </button>
+        )}
+
+        <button
+          className="delete-meters-button"
+          onClick={handleDeleteSelected}
+          disabled={selectedMeters.length === 0}
+        >
+          Delete Selected Meters
+        </button>
         <div className="filters">
           <input
             type="text"
-            placeholder="Filter by TELCO"
-            value={telcoFilter}
-            onChange={e => setTelcoFilter(e.target.value)}
+            placeholder="Search by Meter No."
+            value={search.meterNo}
+            onChange={(e) => setSearch({ ...search, meterNo: e.target.value })}
           />
-          <select value={meterTypeFilter} onChange={e => setMeterTypeFilter(e.target.value)}>
-            <option value="">All Meter Types</option>
-            <option value="Digital">Digital</option>
-            <option value="Analog">Analog</option>
+          <input
+            type="text"
+            placeholder="Search by Ref. No."
+            value={search.refNo}
+            onChange={(e) => setSearch({ ...search, refNo: e.target.value })}
+          />
+          <select
+            value={connectionTypeFilter}
+            onChange={(e) => setConnectionTypeFilter(e.target.value)}
+          >
+            <option value="">All Connection Types</option>
+            <option value="Industrial">Industrial</option>
+            <option value="Street">Street</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Residential">Residential</option>
           </select>
-          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+          <select
+            value={telcoFilter}
+            onChange={(e) => setTelcoFilter(e.target.value)}
+          >
+            <option value="">All Telcos</option>
+            <option value="Jazz">Jazz</option>
+            <option value="Warid">Warid</option>
+            <option value="Zong">Zong</option>
+            <option value="Ufone">Ufone</option>
+            <option value="Telenor">Telenor</option>
+          </select>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
             <option value="">All Statuses</option>
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
           </select>
         </div>
         <div className="meter-management-buttons">
-          <button className="button import-button" onClick={toggleImportModal} >Import Meters</button>
-          <button className="button export-button"  onClick={handleExportMeters} >Export Meters</button>
+          {item.type === "subdivision" && (
+            <button
+              className="button import-button"
+              onClick={toggleImportModal}
+            >
+              Import Meters
+            </button>
+          )}
+          <button className="button export-button" onClick={handleExportMeters}>
+            Export Meters
+          </button>
         </div>
         {currentItems.length > 0 ? (
           <table className="meter-table">
@@ -230,7 +293,7 @@ const RightColumn = ({ selectedItem, updateData }) => {
               </tr>
             </thead>
             <tbody>
-              {currentItems.map(meter => (
+              {currentItems.map((meter) => (
                 <tr key={meter.id}>
                   <td>{meter.id}</td>
                   <td>{meter.NEW_METER_NUMBER}</td>
@@ -248,13 +311,19 @@ const RightColumn = ({ selectedItem, updateData }) => {
                   <td>{meter.SAN_LOAD}</td>
                   <td>{meter.CONSUMER_NAME}</td>
                   <td>{meter.CONSUMER_ADDRESS}</td>
-                  <td>{meter.QC_CHECK ? 'Yes' : 'No'}</td>
+                  <td>{meter.QC_CHECK ? "Yes" : "No"}</td>
                   <td>{meter.APPLICATION_NO}</td>
                   <td>{meter.GREEN_METER}</td>
                   <td>{meter.TELCO}</td>
                   <td>{meter.SIM_NO}</td>
                   <td>{meter.SIGNAL_STRENGTH}</td>
-                  <td>{meter.PICTURE_UPLOAD}</td>
+                  <td>
+                    {meter.PICTURE_UPLOAD && (
+                      <a href={meter.PICTURE_UPLOAD} target="_blank">
+                        View Image
+                      </a>
+                    )}
+                  </td>
                   <td>{meter.METR_REPLACE_DATE_TIME}</td>
                   <td>{meter.NO_OF_RESET_OLD_METER}</td>
                   <td>{meter.NO_OF_RESET_NEW_METER}</td>
@@ -271,12 +340,12 @@ const RightColumn = ({ selectedItem, updateData }) => {
                   <td>{meter.CUMULATIVE_MDI_T2}</td>
                   <td>{meter.CUMULATIVE_MDI_Total}</td>
                   <td>
-        <input
-          type="checkbox"
-          checked={selectedMeters.includes(meter.id)}
-          onChange={() => handleMeterSelection(meter.id)}
-        />
-      </td>
+                    <input
+                      type="checkbox"
+                      checked={selectedMeters.includes(meter.id)}
+                      onChange={() => handleMeterSelection(meter.id)}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
