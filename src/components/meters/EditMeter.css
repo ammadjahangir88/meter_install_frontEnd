@@ -1,0 +1,94 @@
+.edit-meter-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 1000px;
+    width: 100%;
+    overflow-y: auto;
+    max-height: 70%;
+    z-index: 1000;
+}
+  
+  .edit-meter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .edit-meter-close-icon {
+    cursor: pointer;
+    color: #666;
+  }
+  
+  .edit-meter-modal-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .edit-meter-modal-content .input-group {
+    margin-bottom: 15px;
+  }
+  
+  .edit-meter-modal-content .input-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .edit-meter-modal-content input[type="text"],
+  .edit-meter-modal-content input[type="file"],
+  .edit-meter-modal-content select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .edit-meter-modal-content input[type="checkbox"] {
+    margin-top: 5px;
+  }
+  
+  .edit-meter-modal-content .error {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 5px;
+  }
+  
+  .edit-meter-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+  }
+  
+  .edit-meter-submit-button,
+  .edit-meter-cancel-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .edit-meter-submit-button {
+    background-color: #4caf50;
+    color: white;
+    margin-right: 10px;
+  }
+  
+  .edit-meter-submit-button:hover {
+    background-color: #45a049;
+  }
+  
+  .edit-meter-cancel-button {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .edit-meter-cancel-button:hover {
+    background-color: #e53935;
+  }
+  

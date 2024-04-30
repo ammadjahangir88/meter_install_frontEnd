@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import UsersTable from "./components/users/User";
 import EditUser from "./components/users/EditUser";
 import Reports from "./reports/Reports";
-
+import EditMeter from "./components/meters/EditMeter";
 const App = () => {
   const { token, logout } = useAuth();
   //  logout()  //
@@ -57,6 +57,7 @@ const App = () => {
               <Route path="/role" element={<UsersTable />} />
               <Route path="/users/edit/:id" element={<EditUser />} />
               <Route path="/reporting" element={<Reports />} />
+              <Route path="/meters/edit/:id" element={<EditMeter />} />
             </>
           )}
         </Routes>

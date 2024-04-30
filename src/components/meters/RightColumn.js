@@ -6,6 +6,7 @@ import "./index.css";
 import axiosInstance from "../utils/Axios";
 import "./RightColumn.css";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import EditMeter from "./EditMeter";
 
 const RightColumn = ({ selectedItem, updateData, item }) => {
   console.log(item.type);
@@ -19,6 +20,8 @@ const RightColumn = ({ selectedItem, updateData, item }) => {
   const [metreModal, setMetreModal] = useState(false);
   const [importModal, setImportModal] = useState(false);
   const [selectedMeters, setSelectedMeters] = useState([]);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedMeter, setSelectedMeter] = useState(null);
 
   const [file, setFile] = useState(null);
 
@@ -154,9 +157,18 @@ const RightColumn = ({ selectedItem, updateData, item }) => {
       alert("Failed to delete selected meters: " + error.response.data.error);
     }
   };
+  const handleEdit = (meter) => {
+    setSelectedMeter(meter);
+    setEditModalOpen(true);
+  };
 
   return (
     <>
+      <EditMeter
+        isOpen={editModalOpen}
+        setIsOpen={setEditModalOpen}
+        meterId={selectedMeter ? selectedMeter.id : null}
+      />
       {metreModal && (
         <MeterModal isOpen={metreModal} setIsOpen={setMetreModal} />
       )}
@@ -289,6 +301,7 @@ const RightColumn = ({ selectedItem, updateData, item }) => {
                 <th>CUMULATIVE_MDI_T1</th>
                 <th>CUMULATIVE_MDI_T2</th>
                 <th>CUMULATIVE_MDI_Total</th>
+                <th>Edit</th>
                 <th>Delete</th>
               </tr>
             </thead>
@@ -340,6 +353,12 @@ const RightColumn = ({ selectedItem, updateData, item }) => {
                   <td>{meter.CUMULATIVE_MDI_T2}</td>
                   <td>{meter.CUMULATIVE_MDI_Total}</td>
                   <td>
+                    <FaEdit
+                      className="edit-icon"
+                      onClick={() => handleEdit(meter)}
+                    />
+                  </td>
+                  <td>
                     <input
                       type="checkbox"
                       checked={selectedMeters.includes(meter.id)}
@@ -353,6 +372,7 @@ const RightColumn = ({ selectedItem, updateData, item }) => {
         ) : (
           <p>No meters found based on filters.</p>
         )}
+
         <Pagination
           currentPage={currentPage}
           itemsPerPage={itemsPerPage}
