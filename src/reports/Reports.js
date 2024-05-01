@@ -203,7 +203,7 @@ const Reports = () => {
   <div className="meter-management-buttons">
          
           <button className="button export-button"  onClick={handleExportMeters} >Export Meters</button>
-          <button className="button export-button" onClick={() => handleExportReport()}>Export Report</button>
+          <button className="button export-button" onClick={handleExportReport} disabled={!selectedUser}>Export Report</button>
 
         </div>
   <table className="reports-table">

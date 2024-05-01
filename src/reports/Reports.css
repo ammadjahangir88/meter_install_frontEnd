@@ -42,4 +42,8 @@
   button:disabled {
     background-color: #6c757d;
   }
-  
+  .button.export-button:disabled {
+    background-color: #ccc; /* Disabled button color */
+    color: #666;
+    cursor: not-allowed;
+  }

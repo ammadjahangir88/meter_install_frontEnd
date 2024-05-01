@@ -13,8 +13,8 @@ const Index = () => {
   const [selectedItem, setSelectedItem] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [data, setDiscosData] = useState([]);
-  const [displayTree, setDisplayTree] = useState(true); // State to control the display mode
-  const [loading, setLoading] = useState(false);  // Loading state
+  const [displayTree, setDisplayTree] = useState(true); 
+  const [loading, setLoading] = useState(false);  
   const [highlightedItem, setHighlightedItem] = useState({
     name: "",
     type: "all",
@@ -23,7 +23,7 @@ const Index = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);  // Start loading
+      setLoading(true);
       try {
         const response = await axiosInstance.get("/v1/discos");
         setDiscosData(response.data);
@@ -39,19 +39,19 @@ const Index = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-      setLoading(false);  // Stop loading
+      setLoading(false);  
     };
 
     fetchData();
   }, []);
 
   const handleRegionClick = (item) => {
-    // Extract all meters from the clicked region
+   
     const regionMeters = item.divisions.flatMap((division) =>
       division.subdivisions.flatMap((subdivision) => subdivision.meters)
     );
     console.log(regionMeters);
-    // Set the selected item to the meters of the clicked region
+    
     setSelectedItem(regionMeters);
   };
 
@@ -72,7 +72,7 @@ const Index = () => {
 
   const handleDiscosClick = (disco) => {
     console.log(disco);
-    // Get meters of the clicked Disco
+   
     const discoMeters = disco.regions.flatMap((region) =>
       region.divisions.flatMap((division) =>
         division.subdivisions.flatMap((subdivision) => subdivision.meters)
@@ -97,10 +97,10 @@ const Index = () => {
         )
       );
 
-      // Set the selected item to all meters initially
+    
       setSelectedItem(allMeters);
 
-      console.log("All Meters:", allMeters); // Log the final allMeters array
+      console.log("All Meters:", allMeters); 
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -111,14 +111,14 @@ const Index = () => {
  }
   console.log(highlightedItem);
   if (loading) {
-    return <div className="Loader">Loading...</div>;  // Render loading indicator
+    return <div className="Loader">Loading...</div>;  
   }
   return (
     <div style={{ display: "flex", height: "auto", minHeight:'100vh' }}>
       <div style={{ flex: 0.3, width: "100%"  }}>
         <LeftColumn
           data={data}
-          setSelectedItem={setSelectedItemId} // Make sure this is correct
+          setSelectedItem={setSelectedItemId}
           setHighlightedItem={setHighlightedItem}
           selectedItemId={selectedItemId}
           onDiscosClick={handleDiscosClick}
