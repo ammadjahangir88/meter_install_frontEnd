@@ -6,6 +6,8 @@ import './Dashboard.css';
 import MeterDetails from './MeterDetails';
 import { useNavigate } from 'react-router-dom'; 
 import { useAuth } from '../utils/AuthContext';
+import MapComponent from './MapComponent';
+
 const colors = [
     "#FF5733", // Red Orange
     "#33FF57", // Neon Green
@@ -33,6 +35,8 @@ const colors = [
 ChartJS.register(ArcElement, Tooltip, Legend, PieController);
 
 function Dashboard() {
+  const [data, setData] = useState(null);
+
   const [chartData, setChartData] = useState({});
   const [activeIndex, setActiveIndex] = useState(null);  // State to track the active segment index
   const [divisionData, setDivisionData] = useState(null); // State to store data for the selected division
@@ -46,6 +50,7 @@ function Dashboard() {
     try {
       const response = await axiosInstance.get('/v1/meters/dashboard');
       console.log(response.data)
+      setData(response.data);
       if (response.data) {
         const newChartData = formatChartData(response.data);
         setChartData(newChartData);
@@ -97,42 +102,32 @@ function Dashboard() {
 
 
 
-  const divisionOptions = {
+  const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'bottom' },
-      tooltip: { enabled: true }
+      legend: {
+        position: 'bottom', // Changed to right to make it vertical
+      },
+      tooltip: {
+        enabled: true,
+      },
     },
-    animation: { duration: 300 },
+    animation: {
+      duration: 300,
+    },
+  };
+  
+  const divisionOptions = {
+    ...options, // Use the same base options
     onClick: (event, elements, chart) => {
       if (elements.length > 0) {
         const index = elements[0].index;
         const divisionId = chartData.division.ids[index];
         navigate(`/meters/${divisionId}`);
       }
-    }
-  };
-
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom'
-      },
-      tooltip: {
-        enabled: true
-      }
     },
-    animation: {
-      duration: 300
-    },
-   
-    
   };
-
   return (
     <div className="dashboard">
       <h1>Utility Meter Dashboard</h1>
@@ -161,10 +156,13 @@ function Dashboard() {
             <Pie data={chartData.telecom} options={options} />
           </div>
         )}
-       
       </div>
+      <div>
+      {data && data.metersData && <MapComponent meters={data.metersData} />}
+    </div>
     </div>
   );
+  
 }
 
 export default Dashboard;
