@@ -14,6 +14,7 @@ import UsersTable from "./components/users/User";
 import EditUser from "./components/users/EditUser";
 import Reports from "./reports/Reports";
 import EditMeter from "./components/meters/EditMeter";
+import SubMeterDetails from "./components/dashboard/SubMeterDetails";
 const App = () => {
   const { token, logout } = useAuth();
   //  logout()  //
@@ -51,6 +52,7 @@ const App = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/meters" element={<Meters />} />
               <Route path="/meters/:divisionId" element={<MeterDetails />} />
+              <Route path="/sub/meters/:subdivisionId" element={<SubMeterDetails />} />
               <Route path="/discos" element={<Discos />} />
               <Route path="/divisions" element={<Divisions />} />
               <Route path="/subdivisions" element={<Subdivision />} />

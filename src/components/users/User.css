@@ -1,26 +1,50 @@
-.users-table {
-    margin: 20px;
-    padding: 20px;
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
-  .users-table table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .users-table th, .users-table td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  .users-table th {
-    background-color: #f2f2f2;
-  }
-  
-  button {
-    margin-right: 10px;
-  }
-  
+.usersTable {
+  margin: 20px;
+  padding: 20px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.usersTable__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.usersTable th, .usersTable td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.usersTable th {
+  background-color: #f2f2f2;
+}
+
+.usersTable__addButton, .usersTable__deleteButton {
+  margin-right: 10px;
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.usersTable__addButton:hover, .usersTable__deleteButton:hover {
+  background-color: #45a049;
+}
+
+.usersTable__editLink {
+  padding: 5px 10px;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.usersTable__editLink:hover {
+  background-color: #0056b3;
+}

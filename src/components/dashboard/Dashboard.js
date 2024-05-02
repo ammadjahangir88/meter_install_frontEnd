@@ -64,10 +64,18 @@ function Dashboard() {
 
   const formatChartData = (data) => {
     // Check if all required data arrays are present
-    if (!data.divisionData || !data.statusData || !data.tariffData || !data.telecomData) {
+    if (!data.divisionData || !data.subdivisionData || !data.statusData || !data.tariffData || !data.telecomData) {
       throw new Error("One or more required data sets are missing or improperly formatted");
     }
     return {
+      subdivision: {
+        labels: data.subdivisionData.map(item => item.name),
+        ids: data.subdivisionData.map(item => item.id), // Ensure this line exists and is correctly implemented
+        datasets: [{
+          data: data.subdivisionData.map(item => item.value),
+          backgroundColor: colors.slice(0, data.subdivisionData.length) // Ensure colors array is appropriately sliced
+        }]
+      },
       division: {
         labels: data.divisionData.map(item => item.name),
         ids: data.divisionData.map(item => item.id), // Assuming the API now includes IDs
@@ -107,7 +115,7 @@ function Dashboard() {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'bottom', // Changed to right to make it vertical
+        position: 'right', // Changed to right to make it vertical
       },
       tooltip: {
         enabled: true,
@@ -117,7 +125,16 @@ function Dashboard() {
       duration: 300,
     },
   };
-  
+  const subdivisionOptions = {
+    ...options, // Use the same base options
+    onClick: (event, elements, chart) => {
+      if (elements.length > 0) {
+        const index = elements[0].index;
+        const subdivisionId = chartData.subdivision.ids[index];
+        navigate(`/sub/meters/${subdivisionId}`);
+      }
+    },
+  };
   const divisionOptions = {
     ...options, // Use the same base options
     onClick: (event, elements, chart) => {
@@ -136,6 +153,12 @@ function Dashboard() {
           <div>
             <h2>Division Data</h2>
             <Pie data={chartData.division} options={divisionOptions} />
+          </div>
+        )}
+          {chartData.subdivision && (
+          <div>
+            <h2>Subdivision Data</h2>
+            <Pie data={chartData.subdivision} options={subdivisionOptions} />
           </div>
         )}
         {chartData.status && (

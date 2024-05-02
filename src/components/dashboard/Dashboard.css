@@ -7,7 +7,7 @@
 
 .chart-container {
   width: 100%;
-  max-width: 1280px; /* Adjusted to allow more space */
+  max-width: 16000px; 
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;

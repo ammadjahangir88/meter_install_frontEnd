@@ -13,24 +13,35 @@ const Index = () => {
   const [selectedItem, setSelectedItem] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [data, setDiscosData] = useState([]);
-  const [displayTree, setDisplayTree] = useState(true); 
-  const [loading, setLoading] = useState(false);  
+  const [displayTree, setDisplayTree] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [highlightedItem, setHighlightedItem] = useState({
     name: "",
     type: "all",
-    id: ''
+    id: "",
   });
+  const fetchCurrentUser = () => {
+    axiosInstance
+      .get("/v1/users/current")
+      .then((response) => {
+        setCurrentUser(response.data); // Corrected the parenthesis here
+        console.log(response.data);
+      }) // Ensure this parenthesis closes the `then` block
+      .catch((error) => console.error("Error fetching current user:", error));
+  };
 
   useEffect(() => {
+    fetchCurrentUser();
     const fetchData = async () => {
       setLoading(true);
       try {
         const response = await axiosInstance.get("/v1/discos");
         setDiscosData(response.data);
-        const allMeters = response.data.flatMap(disco =>
-          disco.regions.flatMap(region =>
-            region.divisions.flatMap(division =>
-              division.subdivisions.flatMap(subdivision => subdivision.meters)
+        const allMeters = response.data.flatMap((disco) =>
+          disco.regions.flatMap((region) =>
+            region.divisions.flatMap((division) =>
+              division.subdivisions.flatMap((subdivision) => subdivision.meters)
             )
           )
         );
@@ -39,19 +50,18 @@ const Index = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-      setLoading(false);  
+      setLoading(false);
     };
 
     fetchData();
   }, []);
 
   const handleRegionClick = (item) => {
-   
     const regionMeters = item.divisions.flatMap((division) =>
       division.subdivisions.flatMap((subdivision) => subdivision.meters)
     );
     console.log(regionMeters);
-    
+
     setSelectedItem(regionMeters);
   };
 
@@ -72,7 +82,7 @@ const Index = () => {
 
   const handleDiscosClick = (disco) => {
     console.log(disco);
-   
+
     const discoMeters = disco.regions.flatMap((region) =>
       region.divisions.flatMap((division) =>
         division.subdivisions.flatMap((subdivision) => subdivision.meters)
@@ -81,41 +91,38 @@ const Index = () => {
     setSelectedItem(discoMeters);
   };
 
- 
- function updateData(){
-  const fetchData = async () => {
-    try {
-      const response = await axiosInstance.get("/v1/discos");
-      setDiscosData(response.data);
+  function updateData() {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get("/v1/discos");
+        setDiscosData(response.data);
 
-      // Extract all meters from the data
-      const allMeters = response.data.flatMap((disco) =>
-        disco.regions.flatMap((region) =>
-          region.divisions.flatMap((division) =>
-            division.subdivisions.flatMap((subdivision) => subdivision.meters)
+        // Extract all meters from the data
+        const allMeters = response.data.flatMap((disco) =>
+          disco.regions.flatMap((region) =>
+            region.divisions.flatMap((division) =>
+              division.subdivisions.flatMap((subdivision) => subdivision.meters)
+            )
           )
-        )
-      );
+        );
 
-    
-      setSelectedItem(allMeters);
+        setSelectedItem(allMeters);
 
-      console.log("All Meters:", allMeters); 
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+        console.log("All Meters:", allMeters);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  fetchData();
-
- }
+    fetchData();
+  }
   console.log(highlightedItem);
   if (loading) {
-    return <div className="Loader">Loading...</div>;  
+    return <div className="Loader">Loading...</div>;
   }
   return (
-    <div style={{ display: "flex", height: "auto", minHeight:'100vh' }}>
-      <div style={{ flex: 0.3, width: "100%"  }}>
+    <div style={{ display: "flex", height: "auto", minHeight: "100vh" }}>
+      <div style={{ flex: 0.3, width: "100%" }}>
         <LeftColumn
           data={data}
           setSelectedItem={setSelectedItemId}
@@ -128,7 +135,7 @@ const Index = () => {
           onAllClick={handleAllData}
         />
       </div>
-      <div style={{ flex: 1.7, width: "70%"  }}>
+      <div style={{ flex: 1.7, width: "70%" }}>
         <div
           style={{
             display: "flex",
@@ -166,13 +173,34 @@ const Index = () => {
             setIsOpen={setMetreModal}
           />
         )}
-        {highlightedItem.type === "subdivision" ? (
-          <RightColumn selectedItem={selectedItem} item={highlightedItem}  updateData={updateData} />
-        ) : displayTree ? (
-          <RightColumn selectedItem={selectedItem} item={highlightedItem}  updateData={updateData} />
-        ) : (
-          <TableView data={data} item={highlightedItem} updateData={updateData} />
-        )}
+        {
+          // Check if currentUser is not null before rendering RightColumn or TableView
+          currentUser && highlightedItem.type === "subdivision" ? (
+            <RightColumn
+              selectedItem={selectedItem}
+              item={highlightedItem}
+              updateData={updateData}
+              currentUserRole={currentUser.role} // Now safely accessed
+            />
+          ) : currentUser && displayTree ? (
+            <RightColumn
+              selectedItem={selectedItem}
+              item={highlightedItem}
+              updateData={updateData}
+              currentUserRole={currentUser.role} // Now safely accessed
+            />
+          ) : currentUser ? (
+            <TableView
+              data={data}
+              item={highlightedItem}
+              updateData={updateData}
+              currentUserRole={currentUser.role}
+
+            />
+          ) : (
+            <div>Loading user data...</div> // Placeholder for loading state
+          )
+        }
       </div>
     </div>
   );

@@ -46,16 +46,21 @@
 }
 
 /* Button styling for submission and cancellation */
-.meter-submit-button,
-.meter-cancel-button {
-  margin-left: 10px;
+.meter-submit-button {
+ 
   padding: 10px 20px;
   border-radius: 5px;
   border: none;
   cursor: pointer;
   font-weight: bold; /* Makes text a bit bolder */
 }
-
+.meter-cancel-button {
+  cursor: pointer;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  margin-top: 10px;
+}
 /* Styling specific to input types for consistency */
 .input-group {
   margin-bottom: 15px;

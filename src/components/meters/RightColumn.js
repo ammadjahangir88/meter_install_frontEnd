@@ -8,7 +8,7 @@ import "./RightColumn.css";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import EditMeter from "./EditMeter";
 
-const RightColumn = ({ selectedItem, updateData, item }) => {
+const RightColumn = ({ selectedItem, updateData, item, currentUserRole }) => {
   console.log(item.type);
   const [search, setSearch] = useState({ meterNo: "", refNo: "" });
   const [connectionTypeFilter, setConnectionTypeFilter] = useState("");
@@ -22,9 +22,13 @@ const RightColumn = ({ selectedItem, updateData, item }) => {
   const [selectedMeters, setSelectedMeters] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedMeter, setSelectedMeter] = useState(null);
+  // Assuming 'currentUserRole' is passed as a prop or from context/global state
+  const canEdit = currentUserRole === "Field Supervisor" || currentUserRole === "Admin";
+  const canImport = currentUserRole === "Admin";
 
+  console.log(currentUserRole);
   const [file, setFile] = useState(null);
-
+  //  console.log(currentUserRole)
   useEffect(() => {
     // Reset filters when the selected item changes
     setTelcoFilter("");
@@ -164,11 +168,13 @@ const RightColumn = ({ selectedItem, updateData, item }) => {
 
   return (
     <>
-      <EditMeter
-        isOpen={editModalOpen}
-        setIsOpen={setEditModalOpen}
-        meterId={selectedMeter ? selectedMeter.id : null}
-      />
+      {canEdit && (
+        <EditMeter
+          isOpen={editModalOpen}
+          setIsOpen={setEditModalOpen}
+          meterId={selectedMeter ? selectedMeter.id : null}
+        />
+      )}
       {metreModal && (
         <MeterModal isOpen={metreModal} setIsOpen={setMetreModal} />
       )}
@@ -190,19 +196,21 @@ const RightColumn = ({ selectedItem, updateData, item }) => {
         </div>
       )}
       <div className="right-column-container">
-        {item.type === "subdivision" && (
+        {item.type === "subdivision" && canEdit && (
           <button className="addMetre" onClick={() => setMetreModal(true)}>
             Add Meter
           </button>
         )}
 
-        <button
-          className="delete-meters-button"
-          onClick={handleDeleteSelected}
-          disabled={selectedMeters.length === 0}
-        >
-          Delete Selected Meters
-        </button>
+        {canEdit && (
+          <button
+            className="delete-meters-button"
+            onClick={handleDeleteSelected}
+            disabled={selectedMeters.length === 0}
+          >
+            Delete Selected Meters
+          </button>
+        )}
         <div className="filters">
           <input
             type="text"
@@ -301,8 +309,8 @@ const RightColumn = ({ selectedItem, updateData, item }) => {
                 <th>CUMULATIVE_MDI_T1</th>
                 <th>CUMULATIVE_MDI_T2</th>
                 <th>CUMULATIVE_MDI_Total</th>
-                <th>Edit</th>
-                <th>Delete</th>
+                {canEdit && <th>Edit</th>}
+                {canEdit && <th>Delete</th>}
               </tr>
             </thead>
             <tbody>
@@ -352,19 +360,23 @@ const RightColumn = ({ selectedItem, updateData, item }) => {
                   <td>{meter.CUMULATIVE_MDI_T1}</td>
                   <td>{meter.CUMULATIVE_MDI_T2}</td>
                   <td>{meter.CUMULATIVE_MDI_Total}</td>
-                  <td>
-                    <FaEdit
-                      className="edit-icon"
-                      onClick={() => handleEdit(meter)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedMeters.includes(meter.id)}
-                      onChange={() => handleMeterSelection(meter.id)}
-                    />
-                  </td>
+                  {canEdit && (
+                    <>
+                      <td>
+                        <FaEdit
+                          className="edit-icon"
+                          onClick={() => handleEdit(meter)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedMeters.includes(meter.id)}
+                          onChange={() => handleMeterSelection(meter.id)}
+                        />
+                      </td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>

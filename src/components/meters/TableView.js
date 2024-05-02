@@ -4,7 +4,7 @@ import ConfirmationModal from "../utils/ConfirmationModal";
 import "./index.css";
 import AddItemModal from "./AddItemModal";
 
-const TableView = ({ data, item, updateData }) => {
+const TableView = ({ data, item, updateData, currentUserRole }) => {
   const [allItems, setAllItems] = useState([]); // This will hold the IDs of selected discos
   const [selectedDiscoItems, setSelectedDiscoItems] = useState([]);
   const [selectedRegionItems, setSelectedRegionItems] = useState([]);
@@ -12,7 +12,8 @@ const TableView = ({ data, item, updateData }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
-
+  const canEdit = currentUserRole === "Field Supervisor" || currentUserRole === "Admin";
+  const canImport = currentUserRole === "Admin";
   useEffect(() => {
     // Clear selections when item changes
     setAllItems([]);
@@ -158,6 +159,8 @@ const TableView = ({ data, item, updateData }) => {
       <tr key={c.id}>
         <td>{c.id}</td>
         <td>{c.name}</td>
+        {canEdit && (
+          <>
         <td className="checkbox-cell">
           <input
             type="checkbox"
@@ -173,6 +176,8 @@ const TableView = ({ data, item, updateData }) => {
             onChange={() => handleCheckboxChange(c.id, item.type)}
           />
         </td>
+        </>
+         )}
       </tr>
     ));
   };
@@ -205,6 +210,8 @@ const TableView = ({ data, item, updateData }) => {
           updateData={updateData}
           
         />
+          {canEdit && (
+            <>
         <button
           className="table-view-button"
           onClick={handleAddNewClick}
@@ -214,13 +221,17 @@ const TableView = ({ data, item, updateData }) => {
         <button className="table-view-button" onClick={handleDelete}>
           Delete
         </button>
+        </>
+         )}
       </div>
       <table className="table-view">
         <thead>
           <tr>
             <th>ID</th>
             <th>Name</th>
+            {canEdit && (
             <th>Delete</th>
+          )}
           </tr>
         </thead>
         <tbody>{renderContent()}</tbody>

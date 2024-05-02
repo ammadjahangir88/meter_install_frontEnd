@@ -49,6 +49,10 @@ const Reports = () => {
     }
   };
   const handleExportReport = () => {
+    if (!fromDate || !toDate) {
+      alert('Both From Date and To Date need to be selected to export a report.');
+      return;
+    }
     const params = {
       user_id: selectedUser,
       disco_id: selectedDisco,
@@ -198,7 +202,7 @@ const Reports = () => {
       ))}
     </select>
     <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)} className="reports-date-input" />
-    <input type="date" value={toDate} onChange={e => setToDate(e.target.value)} className="reports-date-input" />
+    <input type="date" value={toDate} onChange={e => setToDate(e.target.value)} disabled={!fromDate} min={fromDate} className="reports-date-input" />
   </div>
   <div className="meter-management-buttons">
          
