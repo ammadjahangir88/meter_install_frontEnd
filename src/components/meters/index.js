@@ -91,29 +91,55 @@ const Index = () => {
     setSelectedItem(discoMeters);
   };
 
-  function updateData() {
+  function updateData(){
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get("/v1/discos");
         setDiscosData(response.data);
-
-        // Extract all meters from the data
-        const allMeters = response.data.flatMap((disco) =>
-          disco.regions.flatMap((region) =>
-            region.divisions.flatMap((division) =>
-              division.subdivisions.flatMap((subdivision) => subdivision.meters)
+  
+        let filteredMeters = [];
+        if (highlightedItem.type === 'disco') {
+          const selectedDisco = response.data.find(disco => disco.id === highlightedItem.id);
+          filteredMeters = selectedDisco.regions.flatMap(region =>
+            region.divisions.flatMap(division =>
+              division.subdivisions.flatMap(subdivision => subdivision.meters)
             )
-          )
-        );
-
-        setSelectedItem(allMeters);
-
-        console.log("All Meters:", allMeters);
+          );
+        }
+        else if (highlightedItem.type === 'region') {
+          const region = response.data.flatMap(disco => disco.regions)
+                                       .find(region => region.id === highlightedItem.id);
+          filteredMeters = region.divisions.flatMap(division =>
+            division.subdivisions.flatMap(subdivision => subdivision.meters)
+          );
+        }
+        else if (highlightedItem.type === 'division') {
+          const division = response.data.flatMap(disco => disco.regions.flatMap(region => region.divisions))
+                                         .find(division => division.id === highlightedItem.id);
+          filteredMeters = division.subdivisions.flatMap(subdivision => subdivision.meters);
+        }
+        else if (highlightedItem.type === 'subdivision') {
+          const subdivision = response.data.flatMap(disco => disco.regions.flatMap(region => region.divisions.flatMap(division => division.subdivisions)))
+                                            .find(subdivision => subdivision.id === highlightedItem.id);
+          filteredMeters = subdivision.meters;
+        } else {
+          // If no specific type is highlighted, default to showing all meters
+          filteredMeters = response.data.flatMap(disco =>
+            disco.regions.flatMap(region =>
+              region.divisions.flatMap(division =>
+                division.subdivisions.flatMap(subdivision => subdivision.meters)
+              )
+            )
+          );
+        }
+  
+        setSelectedItem(filteredMeters);
+        console.log("Filtered Meters:", filteredMeters); // Log the final filteredMeters array
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
+  
     fetchData();
   }
   console.log(highlightedItem);

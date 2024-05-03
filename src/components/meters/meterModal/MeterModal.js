@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
 import { FaTimes } from 'react-icons/fa';
 import './MeterModal.css';
 import axiosInstance from '../../utils/Axios';
 
-function MeterModal({ isOpen, setIsOpen }) {
+function MeterModal({ isOpen, setIsOpen,updateData,item  }) {
   const [errors, setErrors] = useState({});
-
+  console.log(item.id)
   const [formData, setFormData] = useState({
     NEW_METER_NUMBER: '',
     REF_NO: '',
@@ -45,8 +45,17 @@ function MeterModal({ isOpen, setIsOpen }) {
     CUMULATIVE_MDI_T1: '',
     CUMULATIVE_MDI_T2: '',
     CUMULATIVE_MDI_Total: '',
-  });
+   
 
+  });
+  // useEffect(() => {
+  //   if (item && item.id) {
+  //     setFormData(currentFormData => ({
+  //       ...currentFormData,
+  //       subdivision_id: item.id // Set the subdivision_id when item changes
+  //     }));
+  //   }
+  // }, [item]);
   const handleChange = event => {
     const { name, type, checked, files, value } = event.target;
     if (type === 'checkbox') {
@@ -104,13 +113,15 @@ function MeterModal({ isOpen, setIsOpen }) {
     formDataToSend.append('meter[CUMULATIVE_MDI_Total]', formData.CUMULATIVE_MDI_Total);
     
     
-  
+    formDataToSend.append('meter[subdivision_id]', item.id);
     try {
       const response = await axiosInstance.post('/v1/meters', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
+      
+      updateData()
       alert('Meter created successfully!');
       setIsOpen(false); // Close modal on success
       console.log('Server Response:', response);
@@ -192,7 +203,7 @@ function MeterModal({ isOpen, setIsOpen }) {
         </select>
       ) : (
         <input type="text" id={key} name={key} value={value} onChange={handleChange} />
-      )}
+      ) }
       {/* Display error messages */}
       {errors[key] && (
         <>

@@ -5,7 +5,7 @@ import './EditMeter.css';
 import axiosInstance from '../utils/Axios';
 
 
-function EditMeter({ isOpen, setIsOpen, meterId }) {
+function EditMeter({ isOpen, setIsOpen, meterId ,  updateData}) {
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     NEW_METER_NUMBER: '',
@@ -85,6 +85,7 @@ function EditMeter({ isOpen, setIsOpen, meterId }) {
           'Content-Type': 'multipart/form-data'
         }
       });
+      updateData()
       alert('Meter updated successfully!');
       setIsOpen(false);
       console.log('Server Response:', response);

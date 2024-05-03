@@ -75,9 +75,11 @@ const RightColumn = ({ selectedItem, updateData, item, currentUserRole }) => {
       alert("Please select a CSV file to import!");
       return;
     }
+  
     const formData = new FormData();
     formData.append("file", file);
-
+    formData.append('meter[subdivision_id]', item.id);
+  
     axiosInstance
       .post("/v1/meters/import", formData, {
         headers: {
@@ -85,17 +87,25 @@ const RightColumn = ({ selectedItem, updateData, item, currentUserRole }) => {
         },
       })
       .then((response) => {
+        // Assuming the server sends back a JSON response with successes and errors array
+        if (response.data.errors && response.data.errors.length > 0) {
+          // Display a detailed error report
+          const errorMessages = response.data.errors.map(err => `${err.ref_no}: ${err.error}`).join("\n");
+          alert(`Import completed with errors:\n${errorMessages}`);
+        } else {
+          alert("All meters imported successfully!");
+        }
+        
         updateData();
-        alert("Meters imported successfully!");
-
         setImportModal(false); // Close the modal
         setFile(null); // Reset file
       })
       .catch((error) => {
         console.error("Import failed:", error);
-        alert("Failed to import meters: " + error.message);
+        alert("Failed to import meters. Please check the console for more details.");
       });
   };
+  
 
   const toggleImportModal = () => {
     setFile(null); // Reset file on opening/closing modal
@@ -173,10 +183,11 @@ const RightColumn = ({ selectedItem, updateData, item, currentUserRole }) => {
           isOpen={editModalOpen}
           setIsOpen={setEditModalOpen}
           meterId={selectedMeter ? selectedMeter.id : null}
+          updateData={updateData} 
         />
       )}
       {metreModal && (
-        <MeterModal isOpen={metreModal} setIsOpen={setMetreModal} />
+        <MeterModal isOpen={metreModal} setIsOpen={setMetreModal} updateData={updateData} item={item} />
       )}
       {importModal && (
         <div className="modal">
