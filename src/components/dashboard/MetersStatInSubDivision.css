@@ -1,0 +1,53 @@
+.meters-stat-subdivision {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    background-color: #f7f9fc; /* Light background for better contrast */
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .meters-stat-subdivision h1 {
+    font-size: 2.5em;
+    color: #2c3e50; /* Darker color for better readability */
+    margin-bottom: 20px;
+  }
+  
+  .statistics {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 20px;
+  }
+  
+  .stat-item {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 10px;
+    flex: 1 1 200px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  
+  .stat-item h2 {
+    font-size: 1.5em;
+    color: #34495e;
+    margin-bottom: 10px;
+  }
+  
+  .stat-item p {
+    font-size: 1.2em;
+    color: #27ae60;
+  }
+  
+  .stat-item:hover {
+    transform: scale(1.05);
+  }
+  

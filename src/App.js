@@ -15,6 +15,12 @@ import EditUser from "./components/users/EditUser";
 import Reports from "./reports/Reports";
 import EditMeter from "./components/meters/EditMeter";
 import SubMeterDetails from "./components/dashboard/SubMeterDetails";
+import ViewRegions from "./components/dashboard/ViewRegions";
+import ViewDivisions from "./components/dashboard/ViewDivisions";
+import ViewSubdivisions from "./components/dashboard/ViewSubdivisions";
+import MetersStatInSubDivision from "./components/dashboard/MetersStatInSubDivision";
+
+
 const App = () => {
   const { token, logout } = useAuth();
   //  logout()  //
@@ -60,6 +66,12 @@ const App = () => {
               <Route path="/users/edit/:id" element={<EditUser />} />
               <Route path="/reporting" element={<Reports />} />
               <Route path="/meters/edit/:id" element={<EditMeter />} />
+              <Route path="/discos/:discoId" element={<ViewRegions />} />
+             
+              <Route path="/subdivisions/:subdivisionId" element={< MetersStatInSubDivision />} />
+              <Route path="/divisions/:divisionId" element={<ViewSubdivisions />} />
+              <Route path="/regions/:regionId" element={<ViewDivisions />} />
+
             </>
           )}
         </Routes>

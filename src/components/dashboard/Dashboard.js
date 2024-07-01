@@ -3,32 +3,31 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, PieController } from 'chart.js';
 import axiosInstance from '../utils/Axios';
 import './Dashboard.css';
-import MeterDetails from './MeterDetails';
 import { useNavigate } from 'react-router-dom'; 
 import { useAuth } from '../utils/AuthContext';
 import MapComponent from './MapComponent';
 
 const colors = [
-    "#FF5733", // Red Orange
-    "#33FF57", // Neon Green
-    "#3357FF", // Azure Radiance
-    "#F333FF", // Electric Violet
-    "#FF338F", // Cerise Red
-    "#FAAAFF", // Screamin Green
-    "#FFA633", // Neon Carrot
-    "#339BFF", // Curious Blue
-    "#8F33FF", // Electric Purple
-    "#FF5733", // Persian Red
-    "#FFAF33", // Sandy Brown
-    "#FF335E", // Sunset Orange
-    "#33FF8F", // Medium Aquamarine
-    "#8F5733", // Raw Umber
-    "#57A0FF", // Malibu
-    "#FF3333", // Red
-    "#33FFAF", // Caribbean Green
-    "#7F33FF", // Electric Indigo
-    "#FFC433", // Saffron
-    "#33D4FF"  // Spray
+  "#8E44AD", // Wisteria
+  "#2980B9", // Belize Hole
+  "#27AE60", // Nephritis
+  "#16A085", // Green Sea
+  "#F39C12", // Orange
+  "#D35400", // Pumpkin
+  "#C0392B", // Pomegranate
+  "#BDC3C7", // Silver
+  "#7F8C8D", // Asbestos
+  "#34495E", // Wet Asphalt
+  "#2C3E50", // Midnight Blue
+  "#1ABC9C", // Turquoise
+  "#3498DB", // Peter River
+  "#9B59B6", // Amethyst
+  "#E67E22", // Carrot
+  "#E74C3C", // Alizarin
+  "#95A5A6", // Concrete
+  "#ECF0F1", // Clouds
+  "#F1C40F", // Sun Flower
+  "#E84393"  // Bright Pink
 ];
 
 // Register Chart.js components
@@ -36,12 +35,10 @@ ChartJS.register(ArcElement, Tooltip, Legend, PieController);
 
 function Dashboard() {
   const [data, setData] = useState(null);
-
   const [chartData, setChartData] = useState({});
-  const [activeIndex, setActiveIndex] = useState(null);  // State to track the active segment index
-  const [divisionData, setDivisionData] = useState(null); // State to store data for the selected division
   const navigate = useNavigate();
   const { logout } = useAuth(); // Use useAuth hook here
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -64,42 +61,50 @@ function Dashboard() {
 
   const formatChartData = (data) => {
     // Check if all required data arrays are present
-    if (!data.divisionData || !data.subdivisionData || !data.statusData || !data.tariffData || !data.telecomData) {
+    if (!data.divisionData || !data.subdivisionData || !data.statusData || !data.tariffData || !data.telecomData || !data.discos_data) {
       throw new Error("One or more required data sets are missing or improperly formatted");
     }
     return {
+      discos: {
+        labels: data.discos_data.map(item => `${item.name} (${item.value})`),
+        ids: data.discos_data.map(item => item.id),
+        datasets: [{
+          data: data.discos_data.map(item => item.value),
+          backgroundColor: colors.slice(0, data.discos_data.length)
+        }]
+      },
       subdivision: {
-        labels: data.subdivisionData.map(item => item.name),
-        ids: data.subdivisionData.map(item => item.id), // Ensure this line exists and is correctly implemented
+        labels: data.subdivisionData.map(item => `${item.name} (${item.value})`),
+        ids: data.subdivisionData.map(item => item.id),
         datasets: [{
           data: data.subdivisionData.map(item => item.value),
-          backgroundColor: colors.slice(0, data.subdivisionData.length) // Ensure colors array is appropriately sliced
+          backgroundColor: colors.slice(0, data.subdivisionData.length)
         }]
       },
       division: {
-        labels: data.divisionData.map(item => item.name),
-        ids: data.divisionData.map(item => item.id), // Assuming the API now includes IDs
+        labels: data.divisionData.map(item => `${item.name} (${item.value})`),
+        ids: data.divisionData.map(item => item.id),
         datasets: [{
           data: data.divisionData.map(item => item.value),
           backgroundColor: colors
         }]
       },
       status: {
-        labels: data.statusData.map(item => item.name),
+        labels: data.statusData.map(item => `${item.name} (${item.value})`),
         datasets: [{
           data: data.statusData.map(item => item.value),
           backgroundColor: colors
         }]
       },
       tariff: {
-        labels: data.tariffData.map(item => item.name),
+        labels: data.tariffData.map(item => `${item.name} (${item.value})`),
         datasets: [{
           data: data.tariffData.map(item => item.value),
           backgroundColor: colors
         }]
       },
       telecom: {
-        labels: data.telecomData.map(item => item.name),
+        labels: data.telecomData.map(item => `${item.name} (${item.value})`),
         datasets: [{
           data: data.telecomData.map(item => item.value),
           backgroundColor: colors
@@ -107,8 +112,6 @@ function Dashboard() {
       }
     };
   };
-
-
 
   const options = {
     responsive: true,
@@ -125,6 +128,18 @@ function Dashboard() {
       duration: 300,
     },
   };
+
+  const discoOptions = {
+    ...options, // Use the same base options
+    onClick: (event, elements, chart) => {
+      if (elements.length > 0) {
+        const index = elements[0].index;
+        const discoId = chartData.discos.ids[index];
+        navigate(`/discos/${discoId}`);
+      }
+    },
+  };
+
   const subdivisionOptions = {
     ...options, // Use the same base options
     onClick: (event, elements, chart) => {
@@ -135,6 +150,7 @@ function Dashboard() {
       }
     },
   };
+
   const divisionOptions = {
     ...options, // Use the same base options
     onClick: (event, elements, chart) => {
@@ -145,22 +161,24 @@ function Dashboard() {
       }
     },
   };
+
   return (
     <div className="dashboard">
       <h1>Utility Meter Dashboard</h1>
       <div className="chart-container">
-        {chartData.division && (
+        {chartData.discos && (
+          <div>
+            <h2>Disco Data</h2>
+            <Pie data={chartData.discos} options={discoOptions} />
+          </div>
+        )}
+         {chartData.division && (
           <div>
             <h2>Division Data</h2>
             <Pie data={chartData.division} options={divisionOptions} />
           </div>
         )}
-          {chartData.subdivision && (
-          <div>
-            <h2>Subdivision Data</h2>
-            <Pie data={chartData.subdivision} options={subdivisionOptions} />
-          </div>
-        )}
+        
         {chartData.status && (
           <div>
             <h2>Status Data</h2>
@@ -181,11 +199,10 @@ function Dashboard() {
         )}
       </div>
       <div>
-      {data && data.metersData && <MapComponent meters={data.metersData} />}
-    </div>
+        {data && data.metersData && <MapComponent meters={data.metersData} />}
+      </div>
     </div>
   );
-  
 }
 
 export default Dashboard;

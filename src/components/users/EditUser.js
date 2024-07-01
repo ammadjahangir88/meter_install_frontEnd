@@ -43,6 +43,7 @@ const EditUser = () => {
         <select id="role" name="role" value={user.role} onChange={handleChange}>
           <option value="Admin">Admin</option>
           <option value="Field Supervisor">Field Supervisor</option>
+          <option value="QC">QC</option>
         </select>
 
         <button type="submit">Update User</button>

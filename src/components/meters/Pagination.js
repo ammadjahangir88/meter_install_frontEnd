@@ -1,6 +1,4 @@
-import React from 'react';
-import './index.css'
-const Pagination = ({ currentPage, itemsPerPage, totalItems, onPageChange }) => {
+const Pagination = ({ currentPage, itemsPerPage, totalItems, totalPages, onPageChange }) => {
   return (
     <div className="pagination-container">
       <button
@@ -11,11 +9,11 @@ const Pagination = ({ currentPage, itemsPerPage, totalItems, onPageChange }) => 
         Previous
       </button>
       <span className="pagination-text">
-        Page {currentPage} of {Math.ceil(totalItems / itemsPerPage)}
+        Page {currentPage} of {totalPages}
       </span>
       <button
         onClick={() => onPageChange(currentPage + 1)}
-        disabled={totalItems <= currentPage * itemsPerPage}
+        disabled={currentPage >= totalPages}
         className="pagination-button"
       >
         Next
@@ -25,3 +23,5 @@ const Pagination = ({ currentPage, itemsPerPage, totalItems, onPageChange }) => 
 };
 
 export default Pagination;
+
+

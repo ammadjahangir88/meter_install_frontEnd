@@ -6,10 +6,8 @@ const toggleItem = (list, setList, id) => {
   setList(list.includes(id) ? list.filter(item => item !== id) : [...list, id]);
 };
 
-const LeftColumn = ({ data, onItemClick, onDiscosClick, onDivisionClick, onRegionClick, setSelectedItem, setHighlightedItem, selectedItemId,onAllClick }) => {
-  const [expandedItems, setExpandedItems] = useState([]);
-  const [expandedDivisions, setExpandedDivisions] = useState([]);
-  const [expandedRegions, setExpandedRegions] = useState([]);
+const LeftColumn = ({ data, onItemClick, onDiscosClick, onDivisionClick, onRegionClick, setSelectedItem, setHighlightedItem, selectedItemId,onAllClick, expandedItems, setExpandedItems, expandedRegions, setExpandedRegions, expandedDivisions, setExpandedDivisions}) => {
+ 
 
   const handleSetSelectedItem = (id, type, name) => {
     setSelectedItem(`${type}-${id}`);

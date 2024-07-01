@@ -30,6 +30,7 @@ const AddUserModal = ({ onClose, onSubmit }) => {
                     <select name="role" value={formData.role} onChange={handleChange}>
                         <option value="Admin">Admin</option>
                         <option value="Field Supervisor">Field Supervisor</option>
+                        <option value="QC">QC</option>
                     </select>
                     <button type="submit">Add User</button>
                 </form>
